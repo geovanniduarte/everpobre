@@ -8,20 +8,22 @@
 
 /* Begin PBXBuildFile section */
 		BC70A1DA2051CEAC00990E75 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC70A1D92051CEAC00990E75 /* AppDelegate.swift */; };
-		BC70A1DC2051CEAC00990E75 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC70A1DB2051CEAC00990E75 /* ViewController.swift */; };
-		BC70A1DF2051CEAD00990E75 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BC70A1DD2051CEAD00990E75 /* Main.storyboard */; };
 		BC70A1E12051CEAD00990E75 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BC70A1E02051CEAD00990E75 /* Assets.xcassets */; };
-		BC70A1E42051CEAD00990E75 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BC70A1E22051CEAD00990E75 /* LaunchScreen.storyboard */; };
+		BC70A1EC2051CF4900990E75 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BC70A1EB2051CF4900990E75 /* Launch Screen.storyboard */; };
+		BC70A1EF2051CFA200990E75 /* NoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC70A1ED2051CFA200990E75 /* NoteViewController.swift */; };
+		BC70A1F02051CFA200990E75 /* NoteViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = BC70A1EE2051CFA200990E75 /* NoteViewController.xib */; };
+		BC70A1F22051F17100990E75 /* NoteViewByCodeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC70A1F12051F17100990E75 /* NoteViewByCodeController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		BC70A1D62051CEAC00990E75 /* Everpobre.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Everpobre.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC70A1D92051CEAC00990E75 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		BC70A1DB2051CEAC00990E75 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		BC70A1DE2051CEAD00990E75 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		BC70A1E02051CEAD00990E75 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		BC70A1E32051CEAD00990E75 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		BC70A1E52051CEAD00990E75 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BC70A1EB2051CF4900990E75 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
+		BC70A1ED2051CFA200990E75 /* NoteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteViewController.swift; sourceTree = "<group>"; };
+		BC70A1EE2051CFA200990E75 /* NoteViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NoteViewController.xib; sourceTree = "<group>"; };
+		BC70A1F12051F17100990E75 /* NoteViewByCodeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteViewByCodeController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,11 +57,12 @@
 			isa = PBXGroup;
 			children = (
 				BC70A1D92051CEAC00990E75 /* AppDelegate.swift */,
-				BC70A1DB2051CEAC00990E75 /* ViewController.swift */,
-				BC70A1DD2051CEAD00990E75 /* Main.storyboard */,
 				BC70A1E02051CEAD00990E75 /* Assets.xcassets */,
-				BC70A1E22051CEAD00990E75 /* LaunchScreen.storyboard */,
 				BC70A1E52051CEAD00990E75 /* Info.plist */,
+				BC70A1EB2051CF4900990E75 /* Launch Screen.storyboard */,
+				BC70A1ED2051CFA200990E75 /* NoteViewController.swift */,
+				BC70A1EE2051CFA200990E75 /* NoteViewController.xib */,
+				BC70A1F12051F17100990E75 /* NoteViewByCodeController.swift */,
 			);
 			path = Everpobre;
 			sourceTree = "<group>";
@@ -123,9 +126,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BC70A1E42051CEAD00990E75 /* LaunchScreen.storyboard in Resources */,
+				BC70A1EC2051CF4900990E75 /* Launch Screen.storyboard in Resources */,
+				BC70A1F02051CFA200990E75 /* NoteViewController.xib in Resources */,
 				BC70A1E12051CEAD00990E75 /* Assets.xcassets in Resources */,
-				BC70A1DF2051CEAD00990E75 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -136,31 +139,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BC70A1DC2051CEAC00990E75 /* ViewController.swift in Sources */,
+				BC70A1EF2051CFA200990E75 /* NoteViewController.swift in Sources */,
 				BC70A1DA2051CEAC00990E75 /* AppDelegate.swift in Sources */,
+				BC70A1F22051F17100990E75 /* NoteViewByCodeController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXVariantGroup section */
-		BC70A1DD2051CEAD00990E75 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				BC70A1DE2051CEAD00990E75 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		BC70A1E22051CEAD00990E75 /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				BC70A1E32051CEAD00990E75 /* Base */,
-			);
-			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		BC70A1E62051CEAD00990E75 /* Debug */ = {
