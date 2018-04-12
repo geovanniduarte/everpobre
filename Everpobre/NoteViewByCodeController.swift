@@ -23,14 +23,6 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
     
     var relativePoint: CGPoint!
     
-    init(rootViewController: UINavigationController){
-        
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
     override func loadView() {
         let backView = UIView()
         backView.backgroundColor = .white
@@ -126,9 +118,17 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
         super.viewDidLoad()
         
         // MARK: Navigation controller
-        navigationController?.toolbar.isHidden = false
+        navigationController?.isToolbarHidden = false
+        let photoBarButton = UIBarButtonItem(barButtonSystemItem: .camera, target: self, action: #selector(catchPhoto))
         
-        // Frame
+        let fixSpace = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
+        
+        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        
+        let mapBarButton =  UIBarButtonItem(title: "Map", style: .done, target: self, action: #selector(addLocation))
+        
+        self.setToolbarItems([photoBarButton, flexibleSpace, mapBarButton], animated: false)
+        // Gestures
         
         let swipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(closeKeyboard))
         swipeGesture.direction = .down
@@ -226,10 +226,14 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
 
     }
     
+    // MARK: Toolbar button actions.
     @objc func catchPhoto () {
         
         let imagePicker = UIImagePickerController()
+        imagePicker.sourceType = .photoLibrary
         imagePicker.delegate = self
+        
+        let actionSheetAlert =  UIAlertController(title: NSLocalizedString("Add photo", comment: "Add photo"), message: nil, preferredStyle: .actionSheet)
         
         let useCamera = UIAlertAction(title: "Camera", style: .default) {
             (alertAction) in
@@ -241,12 +245,27 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
             (alertAction) in
             imagePicker.sourceType = .photoLibrary
             self.present(imagePicker, animated: true, completion: nil)
-            
-            
+        }
+        
+        let cancel = UIAlertAction(title: NSLocalizedString("Cancel", comment: "Cancel"), style: .destructive, handler: nil)
+        
+        actionSheetAlert.addAction(useCamera)
+        actionSheetAlert.addAction(useLibrary)
+        actionSheetAlert.addAction(cancel)
+        
+        present(actionSheetAlert, animated: true, completion: nil)
     }
     
+    @objc func addLocation() {
+        
+    }
+    
+    
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-        <#code#>
+        let image = info[UIImagePickerControllerOriginalImage] as! UIImage
+        imageView.image = image
+        
+        picker.dismiss(animated: true, completion: nil)
     }
 
 }
