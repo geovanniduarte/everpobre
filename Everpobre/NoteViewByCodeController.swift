@@ -8,7 +8,7 @@
 
 import UIKit
 
-class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate {
     
     let dateLabel = UILabel()
     let expirationDate = UILabel()
@@ -22,6 +22,8 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
     var rightImgConstraint: NSLayoutConstraint!
     
     var relativePoint: CGPoint!
+    
+    var note: Note?
     
     override func loadView() {
         let backView = UIView()
@@ -116,6 +118,9 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // MARK: Delegado textField
+        titleTextField.delegate = self
         
         // MARK: Navigation controller
         navigationController?.isToolbarHidden = false
@@ -267,5 +272,11 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
         
         picker.dismiss(animated: true, completion: nil)
     }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        note?.title = textField.text
+        try! note?.managedObjectContext?.save()
+    }
+    
 
 }

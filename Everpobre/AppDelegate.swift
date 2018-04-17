@@ -20,8 +20,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow()
         
         let noteVC = NoteViewByCodeController()
-        
-        let navigationController = UINavigationController(rootViewController: noteVC);
+        let noteTVC = NoteTableViewController(style: .plain)
+        let navigationController = UINavigationController(rootViewController: noteTVC);
         
         window?.rootViewController = navigationController
         

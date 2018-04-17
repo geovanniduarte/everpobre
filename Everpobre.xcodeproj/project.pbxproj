@@ -13,6 +13,9 @@
 		BC70A1EF2051CFA200990E75 /* NoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC70A1ED2051CFA200990E75 /* NoteViewController.swift */; };
 		BC70A1F02051CFA200990E75 /* NoteViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = BC70A1EE2051CFA200990E75 /* NoteViewController.xib */; };
 		BC70A1F22051F17100990E75 /* NoteViewByCodeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC70A1F12051F17100990E75 /* NoteViewByCodeController.swift */; };
+		BCC80620207FF4DF00A1B230 /* Everpobre.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = BCC8061E207FF4DF00A1B230 /* Everpobre.xcdatamodeld */; };
+		BCC806222080016200A1B230 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC806212080016200A1B230 /* DataManager.swift */; };
+		BCC806242080131000A1B230 /* NoteTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC806232080131000A1B230 /* NoteTableViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +27,9 @@
 		BC70A1ED2051CFA200990E75 /* NoteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteViewController.swift; sourceTree = "<group>"; };
 		BC70A1EE2051CFA200990E75 /* NoteViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NoteViewController.xib; sourceTree = "<group>"; };
 		BC70A1F12051F17100990E75 /* NoteViewByCodeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteViewByCodeController.swift; sourceTree = "<group>"; };
+		BCC8061F207FF4DF00A1B230 /* Everpobre.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Everpobre.xcdatamodel; sourceTree = "<group>"; };
+		BCC806212080016200A1B230 /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
+		BCC806232080131000A1B230 /* NoteTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteTableViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +62,7 @@
 		BC70A1D82051CEAC00990E75 /* Everpobre */ = {
 			isa = PBXGroup;
 			children = (
+				BCC8061D207FF45600A1B230 /* Model */,
 				BC70A1D92051CEAC00990E75 /* AppDelegate.swift */,
 				BC70A1E02051CEAD00990E75 /* Assets.xcassets */,
 				BC70A1E52051CEAD00990E75 /* Info.plist */,
@@ -63,8 +70,18 @@
 				BC70A1ED2051CFA200990E75 /* NoteViewController.swift */,
 				BC70A1EE2051CFA200990E75 /* NoteViewController.xib */,
 				BC70A1F12051F17100990E75 /* NoteViewByCodeController.swift */,
+				BCC806232080131000A1B230 /* NoteTableViewController.swift */,
 			);
 			path = Everpobre;
+			sourceTree = "<group>";
+		};
+		BCC8061D207FF45600A1B230 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				BCC8061E207FF4DF00A1B230 /* Everpobre.xcdatamodeld */,
+				BCC806212080016200A1B230 /* DataManager.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -139,7 +156,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BCC80620207FF4DF00A1B230 /* Everpobre.xcdatamodeld in Sources */,
+				BCC806222080016200A1B230 /* DataManager.swift in Sources */,
 				BC70A1EF2051CFA200990E75 /* NoteViewController.swift in Sources */,
+				BCC806242080131000A1B230 /* NoteTableViewController.swift in Sources */,
 				BC70A1DA2051CEAC00990E75 /* AppDelegate.swift in Sources */,
 				BC70A1F22051F17100990E75 /* NoteViewByCodeController.swift in Sources */,
 			);
@@ -305,6 +325,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		BCC8061E207FF4DF00A1B230 /* Everpobre.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				BCC8061F207FF4DF00A1B230 /* Everpobre.xcdatamodel */,
+			);
+			currentVersion = BCC8061F207FF4DF00A1B230 /* Everpobre.xcdatamodel */;
+			path = Everpobre.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = BC70A1CE2051CEAC00990E75 /* Project object */;
 }
