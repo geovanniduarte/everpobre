@@ -9,6 +9,10 @@
 import UIKit
 import  CoreData
 
+protocol NotesViewControllerDelegate {
+    func noteTableViewController(_ viewController: NoteTableViewController, didSelectNote note: Note)
+}
+
 class NoteTableViewController: UITableViewController, NSFetchedResultsControllerDelegate {
     
     var fetchedResultController : NSFetchedResultsController<Note>!
