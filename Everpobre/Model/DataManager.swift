@@ -21,6 +21,7 @@ class DataManager: NSObject {
                 //error handle.
                 print(err)
             }
+            container.viewContext.automaticallyMergesChangesFromParent = true
         })
         return container
     }()
