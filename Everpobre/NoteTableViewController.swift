@@ -28,10 +28,10 @@ class NoteTableViewController: UITableViewController, NSFetchedResultsController
         //Indicamos cual es la entidad relacionada al fetch
         //fetchRequest.entity = NSEntityDescription.entity(forEntityName: "Note", in: noteMOC)
         
-        let fetchRequest = Note.fetchNoteRequest();
+        //let fetchRequest = Note.fetchNoteRequest();
         
         //Aternativa borrar lineas arriba
-        //let fetchRequest2 = NSFetchRequest<Note>(entityName: "Note")
+        let fetchRequest = NSFetchRequest<Note>(entityName: "Note")
         
         //Establecemos los ordenamientos
         let sortByDate = NSSortDescriptor(key: "createdAtTi", ascending: true)
@@ -102,7 +102,7 @@ class NoteTableViewController: UITableViewController, NSFetchedResultsController
             let note = NSEntityDescription.insertNewObject(forEntityName: "Note", into: viewMoc) as! Note
             
             let dict = ["main_title":"Nueva nota KVC", "createdAtTi" : Date().timeIntervalSince1970] as [String: Any]
-            //note.title = "Nueva nota"
+            note.title = "Nueva nota"
             //note.createdAtTi = Date().timeIntervalSince1970
             note.setValuesForKeys(dict)
             try! privateMOC.save()

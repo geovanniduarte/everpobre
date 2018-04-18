@@ -12,10 +12,16 @@ extension Note {
     override public func setValue(_ value: Any?, forUndefinedKey key: String) {
         if key == "main_title" {
             self.setValue(value, forKey: "title")
+        } else {
+            super.setValue(value, forKey: key)
         }
     }
     
-    override public func value(forUndefinedKey key: String) - Any? {
-     
+    public override func value(forUndefinedKey key: String) -> Any? {
+        if key == "main_title" {
+            return "main_title"
+        } else {
+            return super.value(forKey: key)
+        }
     }
 }
