@@ -8,7 +8,7 @@
 
 import UIKit
 
-class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate {
+class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate, NotesViewControllerDelegate {
     
     let dateLabel = UILabel()
     let expirationDate = UILabel()
@@ -23,7 +23,11 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
     
     var relativePoint: CGPoint!
     
-    var note: Note?
+    var note: Note? {
+        didSet {
+            noteTextView.text = note?.title
+        }
+    }
     
     override func loadView() {
         let backView = UIView()
@@ -261,11 +265,6 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
         present(actionSheetAlert, animated: true, completion: nil)
     }
     
-    @objc func addLocation() {
-        
-    }
-    
-    
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         let image = info[UIImagePickerControllerOriginalImage] as! UIImage
         imageView.image = image
@@ -278,5 +277,13 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
         try! note?.managedObjectContext?.save()
     }
     
+    @objc func addLocation() {
+        
+    }
+    
+    func noteTableViewController(_ viewController: NoteTableViewController, didSelectNote note: Note)
+    {
+        self.note = note
+    }
 
 }

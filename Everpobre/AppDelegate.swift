@@ -21,13 +21,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let noteVC = NoteViewByCodeController()
         let noteTVC = NoteTableViewController(style: .plain)
-        let navigationController = UINavigationController(rootViewController: noteTVC);
+        //let navigationController = UINavigationController(rootViewController: noteTVC);
+        if .pad {
+            noteTVC.delegate = noteVC
+        } else {
+            noteTVC.delegate = noteTVC
+        }
         
         let splitViewController = UISplitViewController();
         splitViewController.viewControllers = [noteTVC, noteVC]
         
         
-        window?.rootViewController = navigationController
+        window?.rootViewController = splitViewController
         
         window?.makeKeyAndVisible()
         

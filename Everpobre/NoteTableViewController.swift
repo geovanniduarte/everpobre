@@ -13,10 +13,10 @@ protocol NotesViewControllerDelegate {
     func noteTableViewController(_ viewController: NoteTableViewController, didSelectNote note: Note)
 }
 
-class NoteTableViewController: UITableViewController, NSFetchedResultsControllerDelegate {
-    
+class NoteTableViewController: UITableViewController, NSFetchedResultsControllerDelegate, NotesViewControllerDelegate {
+   
     var fetchedResultController : NSFetchedResultsController<Note>!
-    
+    var delegate: NotesViewControllerDelegate?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -90,10 +90,15 @@ class NoteTableViewController: UITableViewController, NSFetchedResultsController
         return cell!
     }
     
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    func pushNoteView(_ note: Note) {
         let noteViewController = NoteViewByCodeController()
-        noteViewController.note = fetchedResultController.object(at: indexPath)
+        noteViewController.note = note
         navigationController?.pushViewController(noteViewController, animated: true)
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+       let note = fetchedResultController.object(at: indexPath)
+       delegate?.noteTableViewController(self , didSelectNote: note)
     }
 
     // MARK: Creacion de notes, en un hilo de background
@@ -115,10 +120,14 @@ class NoteTableViewController: UITableViewController, NSFetchedResultsController
        
     }
     
-    
-    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>)
+    {
         tableView.reloadData();
     }
     
+    func noteTableViewController(_ viewController: NoteTableViewController, didSelectNote note: Note)
+    {
+        pushNoteView(note)
+    }
 
 }
