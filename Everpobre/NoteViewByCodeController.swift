@@ -23,10 +23,20 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
     
     var relativePoint: CGPoint!
     
-    var note: Note? {
-        didSet {
-            noteTextView.text = note?.title
-        }
+    var note: Note?
+    
+    init(note: Note) {
+        // Limpiamos
+        self.note = note
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    init() {
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     override func loadView() {
@@ -158,6 +168,10 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
         imageView.addGestureRecognizer(moveViewGesture)
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        syncModel();
+    }
+    
     @objc func userMoveImage(longPressGesture: UILongPressGestureRecognizer) {
         print("es continuado")
         
@@ -284,6 +298,11 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
     func noteTableViewController(_ viewController: NoteTableViewController, didSelectNote note: Note)
     {
         self.note = note
+        syncModel()
+    }
+    
+    func syncModel() {
+        titleTextField.text = note?.title
     }
 
 }
