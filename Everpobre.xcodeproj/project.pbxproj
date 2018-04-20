@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BC227D48208974F200BB268E /* NotebookViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC227D47208974F200BB268E /* NotebookViewController.swift */; };
 		BC2B68372086AD89006E406E /* ManagedObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC2B68362086AD89006E406E /* ManagedObject.swift */; };
 		BC70A1DA2051CEAC00990E75 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC70A1D92051CEAC00990E75 /* AppDelegate.swift */; };
 		BC70A1E12051CEAD00990E75 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BC70A1E02051CEAD00990E75 /* Assets.xcassets */; };
@@ -20,6 +21,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		BC227D47208974F200BB268E /* NotebookViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotebookViewController.swift; sourceTree = "<group>"; };
 		BC2B68362086AD89006E406E /* ManagedObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagedObject.swift; sourceTree = "<group>"; };
 		BC70A1D62051CEAC00990E75 /* Everpobre.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Everpobre.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC70A1D92051CEAC00990E75 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -45,6 +47,34 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		BC227D442089744400BB268E /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				BC227D462089749000BB268E /* Notebook */,
+				BC227D452089748000BB268E /* Note */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		BC227D452089748000BB268E /* Note */ = {
+			isa = PBXGroup;
+			children = (
+				BC70A1ED2051CFA200990E75 /* NoteViewController.swift */,
+				BC70A1EE2051CFA200990E75 /* NoteViewController.xib */,
+				BC70A1F12051F17100990E75 /* NoteViewByCodeController.swift */,
+				BCC806232080131000A1B230 /* NoteTableViewController.swift */,
+			);
+			path = Note;
+			sourceTree = "<group>";
+		};
+		BC227D462089749000BB268E /* Notebook */ = {
+			isa = PBXGroup;
+			children = (
+				BC227D47208974F200BB268E /* NotebookViewController.swift */,
+			);
+			path = Notebook;
+			sourceTree = "<group>";
+		};
 		BC2B68352086AD47006E406E /* ManagedObject */ = {
 			isa = PBXGroup;
 			children = (
@@ -72,15 +102,12 @@
 		BC70A1D82051CEAC00990E75 /* Everpobre */ = {
 			isa = PBXGroup;
 			children = (
+				BC227D442089744400BB268E /* Controller */,
 				BCC8061D207FF45600A1B230 /* Model */,
 				BC70A1D92051CEAC00990E75 /* AppDelegate.swift */,
 				BC70A1E02051CEAD00990E75 /* Assets.xcassets */,
 				BC70A1E52051CEAD00990E75 /* Info.plist */,
 				BC70A1EB2051CF4900990E75 /* Launch Screen.storyboard */,
-				BC70A1ED2051CFA200990E75 /* NoteViewController.swift */,
-				BC70A1EE2051CFA200990E75 /* NoteViewController.xib */,
-				BC70A1F12051F17100990E75 /* NoteViewByCodeController.swift */,
-				BCC806232080131000A1B230 /* NoteTableViewController.swift */,
 			);
 			path = Everpobre;
 			sourceTree = "<group>";
@@ -174,6 +201,7 @@
 				BCC806242080131000A1B230 /* NoteTableViewController.swift in Sources */,
 				BC70A1DA2051CEAC00990E75 /* AppDelegate.swift in Sources */,
 				BC70A1F22051F17100990E75 /* NoteViewByCodeController.swift in Sources */,
+				BC227D48208974F200BB268E /* NotebookViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
