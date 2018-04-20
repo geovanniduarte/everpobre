@@ -11,7 +11,7 @@ import UIKit
 class NotebookViewController: UIViewController {
     
     let edtNotebookName = UITextField()
-    let lblNotebookName = UITextView()
+    let lblNotebookName = UILabel()
     
     
 
@@ -27,8 +27,13 @@ class NotebookViewController: UIViewController {
     
     override func loadView() {
         let backView = UIView()
+        backView.backgroundColor = .white
         
+        lblNotebookName.text = "Name"
+        lblNotebookName.backgroundColor = UIColor.red
         backView.addSubview(lblNotebookName)
+        
+        edtNotebookName.placeholder = "Placeholder"
         backView.addSubview(edtNotebookName)
         
         
@@ -37,10 +42,15 @@ class NotebookViewController: UIViewController {
         
         let dictViews = ["lblNotebookName":lblNotebookName, "edtNotebookName":edtNotebookName]
         
-        let constrains = NSLayoutConstraint.constraints(withVisualFormat: "|-10-[lblNotebookName]-20-[edtNotebookName]-10|", options: [], metrics: nil, views: dictViews)
+        var constrains = NSLayoutConstraint.constraints(withVisualFormat: "|-10-[lblNotebookName]-20-[edtNotebookName]-10-|", options: [], metrics: nil, views: dictViews)
         
-        constrains.append(contentsOf: NSLayoutConstraint)
+       
+
+        constrains.append(NSLayoutConstraint(item: lblNotebookName, attribute: .top, relatedBy: .equal, toItem: backView.layoutMarginsGuide, attribute: .top, multiplier: 1, constant: 20))
         
+       constrains.append(NSLayoutConstraint(item: edtNotebookName, attribute: .top, relatedBy: .equal, toItem: backView.layoutMarginsGuide, attribute: .top, multiplier: 1, constant: 20))
+        
+        backView.addConstraints(constrains)
         
         self.view = backView
     }

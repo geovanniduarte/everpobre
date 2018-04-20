@@ -22,7 +22,7 @@ class NoteTableViewController: UITableViewController, NSFetchedResultsController
         super.viewDidLoad()
         let addNote = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNewNote));
         let addNotebook = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(addNewNotebook));
-        navigationItem.rightBarButtonItem =
+        navigationItem.rightBarButtonItems = [addNote, addNotebook]
         
         //Obtenemos el singleton del MOC
         let noteMOC = DataManager.sharedManager.persistentContainer.viewContext
@@ -123,7 +123,10 @@ class NoteTableViewController: UITableViewController, NSFetchedResultsController
     
     
     @objc func addNewNotebook() {
-        
+        let notebookViewController = NotebookViewController()
+        //notebookViewController.modalPresentationStyle = .overCurrentContext
+        //present(notebookViewController, animated: true, completion: nil)
+        navigationController?.pushViewController(notebookViewController, animated: true)
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>)
