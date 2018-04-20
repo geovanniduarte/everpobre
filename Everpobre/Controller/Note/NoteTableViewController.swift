@@ -9,19 +9,20 @@
 import UIKit
 import  CoreData
 
-protocol NotesViewControllerDelegate {
+protocol NotesViewControllerDelegate: NSObjectProtocol {
     func noteTableViewController(_ viewController: NoteTableViewController, didSelectNote note: Note)
 }
 
 class NoteTableViewController: UITableViewController, NSFetchedResultsControllerDelegate, NotesViewControllerDelegate {
    
     var fetchedResultController : NSFetchedResultsController<Note>!
-    var delegate: NotesViewControllerDelegate?
+    
+    weak var delegate: NotesViewControllerDelegate?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         let addNote = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNewNote));
-        let addNotebook = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(addNewNotebook));
+        let addNotebook = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(addNewNotebookModal));
         navigationItem.rightBarButtonItems = [addNote, addNotebook]
         
         //Obtenemos el singleton del MOC
@@ -122,9 +123,10 @@ class NoteTableViewController: UITableViewController, NSFetchedResultsController
     
     
     
-    @objc func addNewNotebook() {
-        let notebookViewController = NotebookViewController()
+    @objc func addNewNotebookModal() {
+        let notebookViewController = NotebookTableTableViewController()
         //notebookViewController.modalPresentationStyle = .overCurrentContext
+        notebookViewController.modalTransitionStyle = .crossDissolve
         //present(notebookViewController, animated: true, completion: nil)
         navigationController?.pushViewController(notebookViewController, animated: true)
     }

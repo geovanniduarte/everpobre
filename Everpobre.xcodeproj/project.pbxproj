@@ -7,8 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		BC227D48208974F200BB268E /* NotebookViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC227D47208974F200BB268E /* NotebookViewController.swift */; };
 		BC2B68372086AD89006E406E /* ManagedObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC2B68362086AD89006E406E /* ManagedObject.swift */; };
+		BC58D9FC208A3A3400A2DF42 /* NotebookTableTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC58D9FA208A3A3400A2DF42 /* NotebookTableTableViewController.swift */; };
+		BC58D9FF208A3C7700A2DF42 /* FormCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BC58D9FE208A3C7700A2DF42 /* FormCell.xib */; };
+		BC58DA01208A46E100A2DF42 /* FormCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC58DA00208A46E100A2DF42 /* FormCell.swift */; };
 		BC70A1DA2051CEAC00990E75 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC70A1D92051CEAC00990E75 /* AppDelegate.swift */; };
 		BC70A1E12051CEAD00990E75 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BC70A1E02051CEAD00990E75 /* Assets.xcassets */; };
 		BC70A1EC2051CF4900990E75 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BC70A1EB2051CF4900990E75 /* Launch Screen.storyboard */; };
@@ -21,8 +23,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		BC227D47208974F200BB268E /* NotebookViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotebookViewController.swift; sourceTree = "<group>"; };
 		BC2B68362086AD89006E406E /* ManagedObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagedObject.swift; sourceTree = "<group>"; };
+		BC58D9FA208A3A3400A2DF42 /* NotebookTableTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotebookTableTableViewController.swift; sourceTree = "<group>"; };
+		BC58D9FE208A3C7700A2DF42 /* FormCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FormCell.xib; sourceTree = "<group>"; };
+		BC58DA00208A46E100A2DF42 /* FormCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormCell.swift; sourceTree = "<group>"; };
 		BC70A1D62051CEAC00990E75 /* Everpobre.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Everpobre.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC70A1D92051CEAC00990E75 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BC70A1E02051CEAD00990E75 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -70,7 +74,9 @@
 		BC227D462089749000BB268E /* Notebook */ = {
 			isa = PBXGroup;
 			children = (
-				BC227D47208974F200BB268E /* NotebookViewController.swift */,
+				BC58D9FA208A3A3400A2DF42 /* NotebookTableTableViewController.swift */,
+				BC58D9FE208A3C7700A2DF42 /* FormCell.xib */,
+				BC58DA00208A46E100A2DF42 /* FormCell.swift */,
 			);
 			path = Notebook;
 			sourceTree = "<group>";
@@ -183,6 +189,7 @@
 			files = (
 				BC70A1EC2051CF4900990E75 /* Launch Screen.storyboard in Resources */,
 				BC70A1F02051CFA200990E75 /* NoteViewController.xib in Resources */,
+				BC58D9FF208A3C7700A2DF42 /* FormCell.xib in Resources */,
 				BC70A1E12051CEAD00990E75 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -195,13 +202,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				BC2B68372086AD89006E406E /* ManagedObject.swift in Sources */,
+				BC58D9FC208A3A3400A2DF42 /* NotebookTableTableViewController.swift in Sources */,
 				BCC80620207FF4DF00A1B230 /* Everpobre.xcdatamodeld in Sources */,
 				BCC806222080016200A1B230 /* DataManager.swift in Sources */,
+				BC58DA01208A46E100A2DF42 /* FormCell.swift in Sources */,
 				BC70A1EF2051CFA200990E75 /* NoteViewController.swift in Sources */,
 				BCC806242080131000A1B230 /* NoteTableViewController.swift in Sources */,
 				BC70A1DA2051CEAC00990E75 /* AppDelegate.swift in Sources */,
 				BC70A1F22051F17100990E75 /* NoteViewByCodeController.swift in Sources */,
-				BC227D48208974F200BB268E /* NotebookViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
