@@ -37,7 +37,7 @@ class NotebookTableTableViewController: UITableViewController {
 extension NotebookTableTableViewController: NSFetchedResultsControllerDelegate {
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        tableView.reloadData()
+        //tableView.reloadData()
     }
 
 }
@@ -51,9 +51,7 @@ extension NotebookTableTableViewController : UITextFieldDelegate {
         let indexPath = IndexPath(row: row, section: 0)
         let notebook = fetchedResultController.object(at: indexPath)
         notebook.name = textField.text
-        
         try! notebook.managedObjectContext?.save()
-        
     }
     
 }
@@ -68,16 +66,15 @@ extension NotebookTableTableViewController  {
             let notebook = self.fetchedResultController.object(at: indexPath)
             privateMOC.delete(notebook)
             try! privateMOC.save()
+            DispatchQueue.main.async {
+                tableView.deleteRows(at:[indexPath], with: .left)
+            }
         }
     }
     
     override func tableView(_ tableView: UITableView, didEndEditingRowAt indexPath: IndexPath?) {
-        
-        
-        
+    
     }
-    
-    
     
 }
 
@@ -155,6 +152,9 @@ extension NotebookTableTableViewController {
             notebook.name = "NEW"
             notebook.createdAtTi = Date().timeIntervalSince1970
             try! privateMOC.save()
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
         }
     }
 }
