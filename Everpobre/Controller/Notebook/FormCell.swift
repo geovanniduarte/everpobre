@@ -12,6 +12,7 @@ class FormCell: UITableViewCell {
 
     @IBOutlet weak var lblName: UILabel!
     @IBOutlet weak var edtName: UITextField!
+    @IBOutlet var imgUsar: UIImageView!
     
     override func awakeFromNib() {
         super.awakeFromNib()

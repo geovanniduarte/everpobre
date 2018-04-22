@@ -10,18 +10,18 @@ import UIKit
 import CoreData
 let CELL_ID = "notebookCellReuse"
 let ENTITY_NAME = "Notebook"
+typealias VoidToVoid = () -> Void
 
 class NotebookTableTableViewController: UITableViewController {
     
     var fetchedResultController : NSFetchedResultsController<Notebook>!
-    
+    var usedNotebookIndex : IndexPath?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         let uinib = UINib.init(nibName: "FormCell", bundle: nil)
         tableView.register(uinib, forCellReuseIdentifier: CELL_ID)
-       
         title = ENTITY_NAME
         
         loadData()
@@ -30,6 +30,23 @@ class NotebookTableTableViewController: UITableViewController {
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
+    }
+    
+    func loadButtons() {
+        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNotebook))
+        
+        navigationItem.rightBarButtonItems = [addButton]
+    }
+    
+    func markFormCell(_ at : IndexPath, used: Bool) {
+        let cell = tableView.cellForRow(at: at)
+        if used {
+            cell?.backgroundColor = UIColor.blue
+            self.usedNotebookIndex = at
+        } else {
+            cell?.backgroundColor = UIColor.white
+        }
+       
     }
 }
 
@@ -46,34 +63,58 @@ extension NotebookTableTableViewController: NSFetchedResultsControllerDelegate {
 
 extension NotebookTableTableViewController : UITextFieldDelegate {
     func textFieldDidEndEditing(_ textField: UITextField) {
-        // NO SE PUEDE HACER SWIP SOBRE UNA CELDA QUE SE ESTA BORRANDO.
-        let row = textField.tag
-        let indexPath = IndexPath(row: row, section: 0)
-        let notebook = fetchedResultController.object(at: indexPath)
-        notebook.name = textField.text
-        try! notebook.managedObjectContext?.save()
+        let dictKVC : [String: Any] = ["name" : textField.text as Any]
+        updateNotebook(at: textField.tag, values: dictKVC)
     }
     
 }
 
-// MARK: - Eliminacion de Notebooks
+// MARK: - acciones en celda de Notebooks
 extension NotebookTableTableViewController  {
-    
+    // MARK: - Cuando se presiona el boton de eliminado.
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        //No hace nada pero se requiere para que las acciones salgan.
         
-        let privateMOC = DataManager.sharedManager.persistentContainer.viewContext
-        privateMOC.perform {
-            let notebook = self.fetchedResultController.object(at: indexPath)
-            privateMOC.delete(notebook)
-            try! privateMOC.save()
-            DispatchQueue.main.async {
-                tableView.deleteRows(at:[indexPath], with: .left)
+    }
+    
+    override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        let useRowAction = UITableViewRowAction(style: .default, title: "Usar", handler: {action, indexPath in
+            if let usedIndex = self.usedNotebookIndex {
+                self.useNotebook(at: usedIndex, used: false) {
+                    DispatchQueue.main.async {
+                        self.markFormCell(usedIndex, used: false)
+                    }
+                }
             }
-        }
+            
+            self.useNotebook(at: indexPath, used: true) {
+                DispatchQueue.main.async {
+                    self.markFormCell(indexPath, used: true)
+                }
+            }
+            
+        })
+        
+        useRowAction.backgroundColor = UIColor.blue
+        
+        let deleteRowAction = UITableViewRowAction(style: .default, title: "Borrar", handler: {action, indexPath in
+            self.deleteNotebook(at: indexPath) {
+                DispatchQueue.main.async {
+                    tableView.deleteRows(at:[indexPath], with: .left)
+                    if let usedIndex = self.usedNotebookIndex {
+                        if usedIndex == indexPath { // SI BORRO EL NOTEBOOK USADO, EL INDEX DEL USADO YA ES NIL
+                            self.usedNotebookIndex = nil
+                        }
+                    }
+                }
+                
+            }
+        })
+        return[useRowAction, deleteRowAction]
     }
     
     override func tableView(_ tableView: UITableView, didEndEditingRowAt indexPath: IndexPath?) {
-    
+     
     }
     
 }
@@ -95,26 +136,31 @@ extension NotebookTableTableViewController  {
         if cell == nil {
             cell = UITableViewCell(style: .default, reuseIdentifier: CELL_ID) as? FormCell
         }
-        print(indexPath)
+        
+        let notebook = fetchedResultController.object(at: indexPath)
         
         let edtName = cell?.edtName
         edtName?.tag = indexPath.row
-        edtName?.text = fetchedResultController.object(at: indexPath).name
+        edtName?.text = notebook.name
         cell?.edtName.delegate = self;
-        
-        
-        // MARK: - gestures
-        //let swipeGesture =
-        
+        print(indexPath)
+        DispatchQueue.main.async {
+            if notebook.isUsing {
+                self.markFormCell(indexPath, used:  true)
+            }
+        }
+        let imgUsar = cell?.imgUsar
+       // imgUsar?.image = UIImage(named: "targaryenSmall")
         return cell!
     }
     
-    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+    }
     
 }
 
-// MARK: - init loads
-
+// MARK: - DAO
 extension NotebookTableTableViewController {
     
     func loadData() {
@@ -126,7 +172,6 @@ extension NotebookTableTableViewController {
         
         notebookFetchReq.sortDescriptors = [sortDescriptor]
         
-        
         fetchedResultController = NSFetchedResultsController(fetchRequest: notebookFetchReq, managedObjectContext: viewContext, sectionNameKeyPath: nil, cacheName: nil)
         
         try! fetchedResultController.performFetch()
@@ -134,16 +179,17 @@ extension NotebookTableTableViewController {
         fetchedResultController.delegate = self;
     }
     
-    func loadButtons() {
-        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNotebook))
-        
-        navigationItem.rightBarButtonItems = [addButton]
-        
+    func deleteNotebook(at: IndexPath, whenEnd: @escaping VoidToVoid ) {
+        let privateMOC = DataManager.sharedManager.persistentContainer.newBackgroundContext()
+        privateMOC.perform {
+            var notebook = self.fetchedResultController.object(at: at)
+            notebook = privateMOC.object(with: notebook.objectID) as! Notebook
+            privateMOC.delete(notebook)
+            try! privateMOC.save()
+            whenEnd()
+        }
     }
-}
-
-//MARK: - actions
-extension NotebookTableTableViewController {
+    
     @objc func addNotebook() {
         let privateMOC = DataManager.sharedManager.persistentContainer.newBackgroundContext()
         
@@ -157,4 +203,49 @@ extension NotebookTableTableViewController {
             }
         }
     }
+    
+    @objc func updateNotebook(at: Int, values: [String: Any]) {
+        // NO SE PUEDE HACER SWIP SOBRE UNA CELDA QUE SE ESTA BORRANDO.
+        let indexPath = IndexPath(row: at, section: 0)
+        let privateMOC = DataManager.sharedManager.persistentContainer.newBackgroundContext()
+        privateMOC.perform {
+            var notebook = self.fetchedResultController.object(at: indexPath)
+            notebook = privateMOC.object(with: notebook.objectID) as! Notebook
+            notebook.setValuesForKeys(values)
+            try! privateMOC.save()
+        }
+       
+    }
+    
+    @objc func useNotebook(at: IndexPath, used: Bool, whenEnd: @escaping VoidToVoid) {
+        let viewContext = DataManager.sharedManager.persistentContainer.viewContext
+        print("usado: ", used, at)
+        let notebook = self.fetchedResultController.object(at: at)
+        
+        //notebook = viewContext.object(with: notebook.objectID) as! Notebook
+        
+        notebook.isUsing = used
+        
+        do {
+           try viewContext.save()
+        } catch {
+            print(error)
+        }
+        
+        whenEnd()
+        
+    }
+    
+    func unmarkMarked() {
+        
+        let viewContext = DataManager.sharedManager.persistentContainer.viewContext
+        let batchUpdate = NSBatchUpdateRequest(entityName: ENTITY_NAME)
+        batchUpdate.predicate = NSPredicate(format: "isUsing = true")
+        batchUpdate.propertiesToUpdate = [AnyHashable("isUsing"): false]
+        try! viewContext.execute(batchUpdate)
+ 
+    }
+    
+    
 }
+

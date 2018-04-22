@@ -48,7 +48,6 @@ class NoteTableViewController: UITableViewController, NSFetchedResultsController
         let predicate = NSPredicate(format: "createdAtTi >= %f", created24h)
         fetchRequest.predicate = predicate
         
-        
         // MARK: Model Controller
         fetchedResultController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: noteMOC, sectionNameKeyPath: "notebook.name", cacheName: nil)
         

@@ -32,7 +32,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let splitViewController = UISplitViewController();
         splitViewController.viewControllers = [navigationController, noteVC]
-        
+        splitViewController.preferredDisplayMode = .primaryOverlay
         
         
         window?.rootViewController = splitViewController
