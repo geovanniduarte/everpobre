@@ -18,43 +18,16 @@ class NoteTableViewController: UITableViewController, NSFetchedResultsController
     var fetchedResultController : NSFetchedResultsController<Note>!
     
     weak var delegate: NotesViewControllerDelegate?
+    var defaultNotebook : Notebook?
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        let addNote = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNewNote));
-        let addNotebook = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(addNewNotebookModal));
+        let addNote = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNewNoteInDefault))
+        let addNotebook = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(addNewNotebookModal))
         navigationItem.rightBarButtonItems = [addNote, addNotebook]
         
-        //Obtenemos el singleton del MOC
-        let noteMOC = DataManager.sharedManager.persistentContainer.viewContext
-        
-        //Creamos el objeto del fecth
-        //let fetchRequest = NSFetchRequest<Note>()
-        
-        //Indicamos cual es la entidad relacionada al fetch
-        //fetchRequest.entity = NSEntityDescription.entity(forEntityName: "Note", in: noteMOC)
-        
-        //let fetchRequest = Note.fetchNoteRequest();
-        
-        //Aternativa borrar lineas arriba
-        let fetchRequest = NSFetchRequest<Note>(entityName: "Note")
-        
-        //Establecemos los ordenamientos
-        let sortByDate = NSSortDescriptor(key: "createdAtTi", ascending: true)
-        fetchRequest.sortDescriptors = [sortByDate]
-        
-        //Establecemos filtros
-        let created24h = Date().timeIntervalSince1970 - 24 * 3600
-        let predicate = NSPredicate(format: "createdAtTi >= %f", created24h)
-        fetchRequest.predicate = predicate
-        
-        // MARK: Model Controller
-        fetchedResultController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: noteMOC, sectionNameKeyPath: "notebook.name", cacheName: nil)
-        
-        try! fetchedResultController.performFetch()
-        
-        fetchedResultController.delegate = self
-        
+        loadData()
+        loadDefaultNotebook()
     }
   
     
@@ -101,26 +74,6 @@ class NoteTableViewController: UITableViewController, NSFetchedResultsController
        let note = fetchedResultController.object(at: indexPath)
        delegate?.noteTableViewController(self , didSelectNote: note)
     }
-
-    // MARK: Creacion de notes, en un hilo de background
-    @objc func addNewNote() {
-        
-        let privateMOC = DataManager.sharedManager.persistentContainer.newBackgroundContext()
-        
-        privateMOC.perform {
-            let note = NSEntityDescription.insertNewObject(forEntityName: "Note", into: privateMOC) as! Note
-            
-            let dict = ["main_title":"Nueva nota KVC", "createdAtTi" : Date().timeIntervalSince1970] as [String: Any]
-            note.title = "Nueva nota"
-            //note.createdAtTi = Date().timeIntervalSince1970
-            note.setValuesForKeys(dict)
-            try! privateMOC.save()
-        }
-       
-       
-    }
-    
-    
     
     @objc func addNewNotebookModal() {
         let notebookViewController = NotebookTableTableViewController()
@@ -140,4 +93,92 @@ class NoteTableViewController: UITableViewController, NSFetchedResultsController
         pushNoteView(note)
     }
 
+}
+// MARK: - DAO
+extension NoteTableViewController {
+    
+    // MARK: Creacion de notes, en un hilo de background
+    @objc func addNewNoteInDefault() {
+        
+        let privateMOC = DataManager.sharedManager.persistentContainer.newBackgroundContext()
+        
+        privateMOC.perform {
+            let note = NSEntityDescription.insertNewObject(forEntityName: "Note", into: privateMOC) as! Note
+            
+            let dict = ["main_title":"Nueva nota KVC", "createdAtTi" : Date().timeIntervalSince1970] as [String: Any]
+            note.title = "Nueva nota"
+            
+            if var privateNotebook = self.defaultNotebook {
+                 privateNotebook = privateMOC.object(with: privateNotebook.objectID) as! Notebook
+                 note.notebook = privateNotebook
+            }
+           
+            //note.createdAtTi = Date().timeIntervalSince1970
+            note.setValuesForKeys(dict)
+            try! privateMOC.save()
+        }
+    }
+    
+    func loadData() {
+        //Obtenemos el singleton del MOC
+        let noteMOC = DataManager.sharedManager.persistentContainer.viewContext
+        
+        //Creamos el objeto del fecth
+        //let fetchRequest = NSFetchRequest<Note>()
+        
+        //Indicamos cual es la entidad relacionada al fetch
+        //fetchRequest.entity = NSEntityDescription.entity(forEntityName: "Note", in: noteMOC)
+        
+        //let fetchRequest = Note.fetchNoteRequest();
+        
+        //Aternativa borrar lineas arriba
+        let fetchRequest = NSFetchRequest<Note>(entityName: "Note")
+        
+        //Establecemos los ordenamientos
+        let sortByDate = NSSortDescriptor(key: "notebook.isDefault", ascending: false)
+        let sortByName = NSSortDescriptor(key: "title", ascending: true)
+        fetchRequest.sortDescriptors = [sortByDate, sortByName]
+        
+        //Establecemos filtros
+        let created24h = Date().timeIntervalSince1970 - 24 * 3600
+        let predicate = NSPredicate(format: "createdAtTi >= %f", created24h)
+        fetchRequest.predicate = predicate
+        
+        // MARK: Model Controller
+        fetchedResultController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: noteMOC, sectionNameKeyPath: "notebook.name", cacheName: nil)
+        
+        try! fetchedResultController.performFetch()
+        
+        fetchedResultController.delegate = self
+    }
+    
+    func loadDefaultNotebook() {
+        //obtenemos el MOC
+        let viewContex = DataManager.sharedManager.persistentContainer.newBackgroundContext()
+        
+        //objeto request
+        let fetchRequest = NSFetchRequest<Notebook>(entityName: NOTEBOOK_ENTITY_NAME)
+        
+        //predicados
+        let predicate = NSPredicate(format: " isDefault = true")
+        
+        //agregar el predicado al fetch
+        fetchRequest.predicate = predicate
+        
+        var notebookList : [Notebook]?
+        
+        //ejecutar la request
+        do {
+          notebookList = try viewContex.fetch(fetchRequest)
+        } catch {
+            
+        }
+        
+        if let notebooks = notebookList {
+            if notebooks.count > 0 {
+                defaultNotebook = notebooks[0]
+            }
+        }
+    
+    }
 }

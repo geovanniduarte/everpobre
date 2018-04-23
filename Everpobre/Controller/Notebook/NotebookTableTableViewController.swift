@@ -9,20 +9,20 @@
 import UIKit
 import CoreData
 let CELL_ID = "notebookCellReuse"
-let ENTITY_NAME = "Notebook"
+let NOTEBOOK_ENTITY_NAME = "Notebook"
 typealias VoidToVoid = () -> Void
 
 class NotebookTableTableViewController: UITableViewController {
     
     var fetchedResultController : NSFetchedResultsController<Notebook>!
-    var usedNotebookIndex : IndexPath?
+    var defaultNotebookIndex : IndexPath?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         let uinib = UINib.init(nibName: "FormCell", bundle: nil)
         tableView.register(uinib, forCellReuseIdentifier: CELL_ID)
-        title = ENTITY_NAME
+        title = NOTEBOOK_ENTITY_NAME
         
         loadData()
         loadButtons()
@@ -42,7 +42,7 @@ class NotebookTableTableViewController: UITableViewController {
         let cell = tableView.cellForRow(at: at)
         if used {
             cell?.backgroundColor = UIColor.blue
-            self.usedNotebookIndex = at
+            self.defaultNotebookIndex = at
         } else {
             cell?.backgroundColor = UIColor.white
         }
@@ -79,7 +79,7 @@ extension NotebookTableTableViewController  {
     
     override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         let useRowAction = UITableViewRowAction(style: .default, title: "Usar", handler: {action, indexPath in
-            if let usedIndex = self.usedNotebookIndex {
+            if let usedIndex = self.defaultNotebookIndex {
                 self.useNotebook(at: usedIndex, used: false) {
                     DispatchQueue.main.async {
                         self.markFormCell(usedIndex, used: false)
@@ -101,9 +101,9 @@ extension NotebookTableTableViewController  {
             self.deleteNotebook(at: indexPath) {
                 DispatchQueue.main.async {
                     tableView.deleteRows(at:[indexPath], with: .left)
-                    if let usedIndex = self.usedNotebookIndex {
+                    if let usedIndex = self.defaultNotebookIndex {
                         if usedIndex == indexPath { // SI BORRO EL NOTEBOOK USADO, EL INDEX DEL USADO YA ES NIL
-                            self.usedNotebookIndex = nil
+                            self.defaultNotebookIndex = nil
                         }
                     }
                 }
@@ -145,7 +145,7 @@ extension NotebookTableTableViewController  {
         cell?.edtName.delegate = self;
         print(indexPath)
         DispatchQueue.main.async {
-            if notebook.isUsing {
+            if notebook.isDefault {
                 self.markFormCell(indexPath, used:  true)
             }
         }
@@ -166,7 +166,7 @@ extension NotebookTableTableViewController {
     func loadData() {
         let viewContext = DataManager.sharedManager.persistentContainer.viewContext
         
-        let notebookFetchReq = NSFetchRequest<Notebook>(entityName: ENTITY_NAME)
+        let notebookFetchReq = NSFetchRequest<Notebook>(entityName: NOTEBOOK_ENTITY_NAME)
         
         let sortDescriptor = NSSortDescriptor(key: "createdAtTi", ascending: true)
         
@@ -194,7 +194,7 @@ extension NotebookTableTableViewController {
         let privateMOC = DataManager.sharedManager.persistentContainer.newBackgroundContext()
         
         privateMOC.perform {
-            let notebook = NSEntityDescription.insertNewObject(forEntityName: ENTITY_NAME, into: privateMOC) as! Notebook
+            let notebook = NSEntityDescription.insertNewObject(forEntityName: NOTEBOOK_ENTITY_NAME, into: privateMOC) as! Notebook
             notebook.name = "NEW"
             notebook.createdAtTi = Date().timeIntervalSince1970
             try! privateMOC.save()
@@ -224,7 +224,7 @@ extension NotebookTableTableViewController {
         
         //notebook = viewContext.object(with: notebook.objectID) as! Notebook
         
-        notebook.isUsing = used
+        notebook.isDefault = used
         
         do {
            try viewContext.save()
@@ -239,7 +239,7 @@ extension NotebookTableTableViewController {
     func unmarkMarked() {
         
         let viewContext = DataManager.sharedManager.persistentContainer.viewContext
-        let batchUpdate = NSBatchUpdateRequest(entityName: ENTITY_NAME)
+        let batchUpdate = NSBatchUpdateRequest(entityName: NOTEBOOK_ENTITY_NAME)
         batchUpdate.predicate = NSPredicate(format: "isUsing = true")
         batchUpdate.propertiesToUpdate = [AnyHashable("isUsing"): false]
         try! viewContext.execute(batchUpdate)
