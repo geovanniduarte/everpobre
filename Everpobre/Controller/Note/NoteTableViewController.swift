@@ -132,7 +132,8 @@ extension NoteTableViewController {
         let fetchRequest = NSFetchRequest<Note>(entityName: "Note")
         
         //Establecemos los ordenamientos
-        let sortByNotebook = NSSortDescriptor(key: "notebook.isDefault", ascending: false, comparator: {obj1 , obj2  in
+        let sortByNotebook = NSSortDescriptor(key: "notebook.isDefault", ascending: false)
+            /*, comparator: {obj1 , obj2  in
             let note1 = obj1 as! Note
             let note2 = obj2 as! Note
             
@@ -143,9 +144,9 @@ extension NoteTableViewController {
             // si no es ascending
             
             // si no los dos son iguales
-            
+            return ComparisonResult.orderedSame
         })
-        
+        */
         //let sortByName = NSSortDescriptor(key: "notebook.name", ascending: true)
         fetchRequest.sortDescriptors = [sortByNotebook]
         
