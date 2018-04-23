@@ -25,16 +25,13 @@ class NoteTableViewController: UITableViewController, NSFetchedResultsController
         let addNote = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNewNoteInDefault))
         let addNotebook = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(addNewNotebookModal))
         navigationItem.rightBarButtonItems = [addNote, addNotebook]
-        
         loadData()
-        loadDefaultNotebook()
     }
   
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        //tableView.reloadData();
-        
+        loadDefaultNotebook()
     }
     
     override func didReceiveMemoryWarning() {
@@ -135,9 +132,22 @@ extension NoteTableViewController {
         let fetchRequest = NSFetchRequest<Note>(entityName: "Note")
         
         //Establecemos los ordenamientos
-        let sortByDate = NSSortDescriptor(key: "notebook.isDefault", ascending: false)
-        let sortByName = NSSortDescriptor(key: "title", ascending: true)
-        fetchRequest.sortDescriptors = [sortByDate, sortByName]
+        let sortByNotebook = NSSortDescriptor(key: "notebook.isDefault", ascending: false, comparator: {obj1 , obj2  in
+            let note1 = obj1 as! Note
+            let note2 = obj2 as! Note
+            
+            if (note1.notebook?.isDefault)! { // si 1 es true y 2 false es descending
+                
+            }
+            
+            // si no es ascending
+            
+            // si no los dos son iguales
+            
+        })
+        
+        //let sortByName = NSSortDescriptor(key: "notebook.name", ascending: true)
+        fetchRequest.sortDescriptors = [sortByNotebook]
         
         //Establecemos filtros
         let created24h = Date().timeIntervalSince1970 - 24 * 3600
