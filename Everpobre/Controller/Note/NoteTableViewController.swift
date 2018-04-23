@@ -39,15 +39,21 @@ class NoteTableViewController: UITableViewController, NSFetchedResultsController
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
+        print("INFO", fetchedResultController.sections!.count)
         return fetchedResultController.sections!.count
     }
 
     // MARK: - Table view data source
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return fetchedResultController.sections![section].name
+        let note = fetchedResultController.object(at: IndexPath(row: 0, section: section)) // obtiene el primer objeto de la seccion.
+        
+        let itsSectionName = note.notebook?.name
+        
+        return itsSectionName
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+         print("ROWS IN SECTION ", section, fetchedResultController.sections![section].numberOfObjects)
         return fetchedResultController.sections![section].numberOfObjects
     }
 
@@ -57,7 +63,7 @@ class NoteTableViewController: UITableViewController, NSFetchedResultsController
         if cell == nil {
             cell = UITableViewCell(style: .default, reuseIdentifier: "reuseIdentifier")
         }
-        cell?.textLabel?.text = fetchedResultController.object(at: indexPath).title
+        cell?.textLabel?.text = "\(fetchedResultController.object(at: indexPath).title) \(fetchedResultController.object(at: indexPath).notebook?.name)"
         return cell!
     }
     
@@ -132,22 +138,9 @@ extension NoteTableViewController {
         let fetchRequest = NSFetchRequest<Note>(entityName: "Note")
         
         //Establecemos los ordenamientos
-        let sortByNotebook = NSSortDescriptor(key: "notebook.isDefault", ascending: false)
-            /*, comparator: {obj1 , obj2  in
-            let note1 = obj1 as! Note
-            let note2 = obj2 as! Note
-            
-            if (note1.notebook?.isDefault)! { // si 1 es true y 2 false es descending
-                
-            }
-            
-            // si no es ascending
-            
-            // si no los dos son iguales
-            return ComparisonResult.orderedSame
-        })
-        */
-        //let sortByName = NSSortDescriptor(key: "notebook.name", ascending: true)
+        let sortByNotebook = NSSortDescriptor(key: "notebook.isDefault", ascending: false )
+        
+        let sortByName = NSSortDescriptor(key: "notebook.name", ascending: true)
         fetchRequest.sortDescriptors = [sortByNotebook]
         
         //Establecemos filtros
