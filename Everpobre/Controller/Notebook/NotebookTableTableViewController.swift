@@ -271,17 +271,5 @@ extension NotebookTableTableViewController {
         whenEnd()
         
     }
-    
-    func unmarkMarked() {
-        
-        let viewContext = DataManager.sharedManager.persistentContainer.viewContext
-        let batchUpdate = NSBatchUpdateRequest(entityName: NOTEBOOK_ENTITY_NAME)
-        batchUpdate.predicate = NSPredicate(format: "isUsing = true")
-        batchUpdate.propertiesToUpdate = [AnyHashable("isUsing"): false]
-        try! viewContext.execute(batchUpdate)
- 
-    }
-    
-    
 }
 
