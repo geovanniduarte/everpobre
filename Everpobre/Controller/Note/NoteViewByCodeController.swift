@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate, NotesViewControllerDelegate {
     
@@ -14,6 +15,7 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
     let expirationDate = UILabel()
     let titleTextField = UITextField()
     let noteTextView = UITextView()
+    let notebookPickerView = UIPickerView()
     
     let imageView = UIImageView()
     var topImgConstraint: NSLayoutConstraint!
@@ -24,6 +26,7 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
     var relativePoint: CGPoint!
     
     var note: Note?
+    var notebooks : [Notebook]?
     
     init(note: Note) {
         // Limpiamos
@@ -57,12 +60,18 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
         
         // Configuro noteTextView
         noteTextView.text = "Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda."
+        noteTextView.backgroundColor = UIColor.blue
         
         backView.addSubview(noteTextView)
         
         // Configuro imageView
         imageView.backgroundColor = .red
         backView.addSubview(imageView)
+        
+        //configuro notebook picker
+        notebookPickerView.delegate =  self
+        notebookPickerView.dataSource = self
+        backView.addSubview(notebookPickerView)
         
         
         
@@ -72,17 +81,21 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
         noteTextView.translatesAutoresizingMaskIntoConstraints = false
         expirationDate.translatesAutoresizingMaskIntoConstraints = false
         imageView.translatesAutoresizingMaskIntoConstraints = false;
+        notebookPickerView.translatesAutoresizingMaskIntoConstraints = false;
         
-        let viewDict = ["dateLabel":dateLabel, "noteTextView":noteTextView,"titleTextField":titleTextField, "expirationDate":expirationDate]
+        
+        let viewDict = ["dateLabel":dateLabel, "noteTextView":noteTextView,"titleTextField":titleTextField, "expirationDate":expirationDate, "notebookPickerView":notebookPickerView]
         
         // Horizontals
         var constrains = NSLayoutConstraint.constraints(withVisualFormat: "|-10-[titleTextField]-10-[expirationDate]-10-[dateLabel]-10-|", options: [], metrics: nil, views: viewDict)
         
         constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-10-[noteTextView]-10-|", options: [], metrics: nil, views: viewDict))
         
+        constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-10-[notebookPickerView]-10-|", options: [], metrics: nil, views: viewDict))
+        
         // Vertical
         
-        constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "V:|-[dateLabel]-10-[noteTextView]-10-|", options: [], metrics: nil, views: viewDict))
+        constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "V:|-[dateLabel]-10-[notebookPickerView]-10-[noteTextView]-10-|", options: [], metrics: nil, views: viewDict))
         
         constrains.append(NSLayoutConstraint(item: dateLabel,
                                              attribute: .top,
@@ -104,7 +117,7 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
                                              toItem: dateLabel,
                                              attribute: .lastBaseline,
                                              multiplier: 1, constant: 0))
-        
+    
         // Img view constrains
         topImgConstraint = NSLayoutConstraint(item: imageView, attribute: .top, relatedBy: .equal, toItem: noteTextView, attribute: .top, multiplier: 1, constant: 20)
         
@@ -166,10 +179,13 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
         let moveViewGesture = UILongPressGestureRecognizer(target: self, action: #selector(userMoveImage))
         
         imageView.addGestureRecognizer(moveViewGesture)
+        
+        loadData();
     }
     
     override func viewWillAppear(_ animated: Bool) {
         syncModel();
+        
     }
     
     @objc func userMoveImage(longPressGesture: UILongPressGestureRecognizer) {
@@ -305,4 +321,73 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
         titleTextField.text = note?.title
     }
 
+}
+
+// MARK : - Picker
+extension NoteViewByCodeController : UIPickerViewDelegate, UIPickerViewDataSource{
+    // MARK: - Delegates and data sources
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return self.notebooks!.count + 1
+    }
+    
+    // MARK: - Delegates
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        var pickerCellName : String = ""
+        if row == 0 {
+            pickerCellName = "SELECT"
+        } else {
+            if let name = self.notebooks![row - 1].name {
+                pickerCellName = name
+            }
+        }
+        
+        if note?.notebook?.name == pickerCellName {
+            notebookPickerView.selectRow(row, inComponent: 0, animated: true);
+        }
+        
+        return pickerCellName
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        setNotebook(row - 1);
+    }
+    
+}
+
+extension NoteViewByCodeController {
+    
+    func loadData() {
+        let viewContext = DataManager.sharedManager.persistentContainer.viewContext
+        
+        let notebookFetchReq = NSFetchRequest<Notebook>(entityName: NOTEBOOK_ENTITY_NAME)
+        
+        let sortByName = NSSortDescriptor(key: "name", ascending: true)
+        
+        notebookFetchReq.sortDescriptors = [sortByName]
+        
+        do {
+            self.notebooks = try viewContext.fetch(notebookFetchReq);
+        } catch {
+            print("no se pudo obtener notebooks en note", error);
+        }
+    }
+    
+    func setNotebook(_ at: Int) {
+        let selectedNotebook = self.notebooks![at]
+        
+        self.note?.notebook = selectedNotebook
+        
+        let viewContex = self.note?.managedObjectContext
+        
+        do {
+           try viewContex?.save()
+        } catch {
+            print(error)
+        }
+    }
+    
 }

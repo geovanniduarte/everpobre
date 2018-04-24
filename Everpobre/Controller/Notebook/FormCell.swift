@@ -14,8 +14,12 @@ class FormCell: UITableViewCell {
     @IBOutlet weak var edtName: UITextField!
     @IBOutlet var imgUsar: UIImageView!
     
+    
     override func awakeFromNib() {
         super.awakeFromNib()
+        lblName.translatesAutoresizingMaskIntoConstraints = false
+        edtName.translatesAutoresizingMaskIntoConstraints = false
+        imgUsar.translatesAutoresizingMaskIntoConstraints = false
    
     }
 

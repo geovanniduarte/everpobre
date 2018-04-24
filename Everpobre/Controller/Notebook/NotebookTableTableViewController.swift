@@ -98,23 +98,53 @@ extension NotebookTableTableViewController  {
         useRowAction.backgroundColor = UIColor.blue
         
         let deleteRowAction = UITableViewRowAction(style: .default, title: "Borrar", handler: {action, indexPath in
-            self.deleteNotebook(at: indexPath) {
-                DispatchQueue.main.async {
-                    tableView.deleteRows(at:[indexPath], with: .left)
-                    if let usedIndex = self.defaultNotebookIndex {
-                        if usedIndex == indexPath { // SI BORRO EL NOTEBOOK USADO, EL INDEX DEL USADO YA ES NIL
-                            self.defaultNotebookIndex = nil
-                        }
-                    }
-                }
-                
-            }
+            self.deleteOptions(at: indexPath, on: tableView)
         })
         return[useRowAction, deleteRowAction]
     }
     
     override func tableView(_ tableView: UITableView, didEndEditingRowAt indexPath: IndexPath?) {
      
+    }
+    
+    func deleteOptions(at: IndexPath, on tableView: UITableView) {
+        let alertController = UIAlertController(title: NSLocalizedString("Eliminar", comment: "Eliminar"), message: nil, preferredStyle: .actionSheet)
+        
+        let allAction = UIAlertAction(title: NSLocalizedString("Todo", comment: "Todo"), style: .default) { alertAction in
+            self.deleteNotebook(at: at, cascadeNotes: true) {
+                DispatchQueue.main.async {
+                    tableView.deleteRows(at:[at], with: .left)
+                    if let usedIndex = self.defaultNotebookIndex {
+                        if usedIndex == at { // SI BORRO EL NOTEBOOK USADO, EL INDEX DEL USADO YA ES NIL
+                            self.defaultNotebookIndex = nil
+                        }
+                    }
+                }
+                
+            }
+        }
+        
+        let oneAction = UIAlertAction(title: NSLocalizedString("Solo notebook", comment: "Solo notebook"), style: .default) { alertAction in
+            self.deleteNotebook(at: at, cascadeNotes: false) {
+                DispatchQueue.main.async {
+                    tableView.deleteRows(at:[at], with: .left)
+                    if let usedIndex = self.defaultNotebookIndex {
+                        if usedIndex == at { // SI BORRO EL NOTEBOOK USADO, EL INDEX DEL USADO YA ES NIL
+                            self.defaultNotebookIndex = nil
+                        }
+                    }
+                }
+                
+            }
+        }
+        
+        let cancelAction = UIAlertAction(title: NSLocalizedString("Cancelar", comment: "Cancelar"), style: .destructive, handler: nil)
+        
+        alertController.addAction(allAction)
+        alertController.addAction(oneAction)
+        alertController.addAction(cancelAction)
+        
+        present(alertController, animated: true, completion: nil)
     }
     
 }
@@ -179,11 +209,17 @@ extension NotebookTableTableViewController {
         fetchedResultController.delegate = self;
     }
     
-    func deleteNotebook(at: IndexPath, whenEnd: @escaping VoidToVoid ) {
+    func deleteNotebook(at: IndexPath, cascadeNotes: Bool, whenEnd: @escaping VoidToVoid ) {
         let privateMOC = DataManager.sharedManager.persistentContainer.newBackgroundContext()
         privateMOC.perform {
             var notebook = self.fetchedResultController.object(at: at)
             notebook = privateMOC.object(with: notebook.objectID) as! Notebook
+            if cascadeNotes {
+                let setNotes = notebook.notes as! Set<Note>
+                setNotes.forEach { note in
+                    privateMOC.delete(note)
+                }
+            }
             privateMOC.delete(notebook)
             try! privateMOC.save()
             whenEnd()

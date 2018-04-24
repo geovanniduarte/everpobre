@@ -143,7 +143,7 @@ extension NoteTableViewController {
         let sortByNotebook = NSSortDescriptor(key: "notebook.isDefault", ascending: false )
         
         let sortByName = NSSortDescriptor(key: "notebook.name", ascending: false)
-        fetchRequest.sortDescriptors = [sortByNotebook, sortByName]
+        fetchRequest.sortDescriptors = [sortByName]
         
         //Establecemos filtros
         let created24h = Date().timeIntervalSince1970 - 24 * 3600
