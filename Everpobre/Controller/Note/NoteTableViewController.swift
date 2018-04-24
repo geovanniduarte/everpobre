@@ -32,6 +32,7 @@ class NoteTableViewController: UITableViewController, NSFetchedResultsController
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         loadDefaultNotebook()
+        
     }
     
     override func didReceiveMemoryWarning() {
@@ -53,7 +54,7 @@ class NoteTableViewController: UITableViewController, NSFetchedResultsController
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-         print("ROWS IN SECTION ", section, fetchedResultController.sections![section].numberOfObjects)
+         print("ROWS IN SECTION ", fetchedResultController.sections![section].name, fetchedResultController.sections![section].numberOfObjects)
         return fetchedResultController.sections![section].numberOfObjects
     }
 
@@ -63,6 +64,7 @@ class NoteTableViewController: UITableViewController, NSFetchedResultsController
         if cell == nil {
             cell = UITableViewCell(style: .default, reuseIdentifier: "reuseIdentifier")
         }
+        print("\(fetchedResultController.object(at: indexPath).title) \(fetchedResultController.object(at: indexPath).notebook?.name) \(indexPath)")
         cell?.textLabel?.text = "\(fetchedResultController.object(at: indexPath).title) \(fetchedResultController.object(at: indexPath).notebook?.name)"
         return cell!
     }
@@ -140,8 +142,8 @@ extension NoteTableViewController {
         //Establecemos los ordenamientos
         let sortByNotebook = NSSortDescriptor(key: "notebook.isDefault", ascending: false )
         
-        let sortByName = NSSortDescriptor(key: "notebook.name", ascending: true)
-        fetchRequest.sortDescriptors = [sortByNotebook]
+        let sortByName = NSSortDescriptor(key: "notebook.name", ascending: false)
+        fetchRequest.sortDescriptors = [sortByNotebook, sortByName]
         
         //Establecemos filtros
         let created24h = Date().timeIntervalSince1970 - 24 * 3600
@@ -181,8 +183,27 @@ extension NoteTableViewController {
         if let notebooks = notebookList {
             if notebooks.count > 0 {
                 defaultNotebook = notebooks[0]
+            } else {
+                defaultNotebook = addDefaultNotebook()
             }
         }
+    }
     
+    
+    func addDefaultNotebook () -> Notebook? {
+        //obtenemos el MOC
+        let privateMOC = DataManager.sharedManager.persistentContainer.newBackgroundContext()
+        var notebook : Notebook?
+        privateMOC.performAndWait  {
+            notebook = NSEntityDescription.insertNewObject(forEntityName: NOTEBOOK_ENTITY_NAME, into: privateMOC) as! Notebook
+            notebook?.isDefault = true
+            notebook?.name = "NEW DEFAULT"
+            do {
+                try privateMOC.save()
+            } catch {
+                print(error)
+            }
+        }
+        return notebook
     }
 }
