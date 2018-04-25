@@ -269,7 +269,6 @@ extension NotebookTableTableViewController {
         }
         
         whenEnd()
-        
     }
 }
 

@@ -16,6 +16,7 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
     let titleTextField = UITextField()
     let noteTextView = UITextView()
     let notebookPickerView = UIPickerView()
+    let testButton = UIButton()
     
     let imageView = UIImageView()
     var topImgConstraint: NSLayoutConstraint!
@@ -73,6 +74,11 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
         notebookPickerView.dataSource = self
         backView.addSubview(notebookPickerView)
         
+        testButton.titleLabel?.text = "TEST"
+        testButton.backgroundColor = UIColor.blue
+        testButton.addTarget(self, action: #selector(addLocation), for: .touchUpInside)
+        backView.addSubview(testButton)
+        
         
         
         // MARK: Autolayout
@@ -82,9 +88,10 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
         expirationDate.translatesAutoresizingMaskIntoConstraints = false
         imageView.translatesAutoresizingMaskIntoConstraints = false;
         notebookPickerView.translatesAutoresizingMaskIntoConstraints = false;
+        testButton.translatesAutoresizingMaskIntoConstraints = false
         
         
-        let viewDict = ["dateLabel":dateLabel, "noteTextView":noteTextView,"titleTextField":titleTextField, "expirationDate":expirationDate, "notebookPickerView":notebookPickerView]
+        let viewDict = ["dateLabel":dateLabel, "noteTextView":noteTextView,"titleTextField":titleTextField, "expirationDate":expirationDate, "notebookPickerView":notebookPickerView, "testButton":testButton]
         
         // Horizontals
         var constrains = NSLayoutConstraint.constraints(withVisualFormat: "|-10-[titleTextField]-10-[expirationDate]-10-[dateLabel]-10-|", options: [], metrics: nil, views: viewDict)
@@ -93,9 +100,11 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
         
         constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-10-[notebookPickerView]-10-|", options: [], metrics: nil, views: viewDict))
         
+        constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-10-[testButton]-10-|", options: [], metrics: nil, views: viewDict))
+        
         // Vertical
         
-        constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "V:|-[dateLabel]-10-[notebookPickerView]-10-[noteTextView]-10-|", options: [], metrics: nil, views: viewDict))
+        constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "V:|-[dateLabel]-10-[testButton]-10-[notebookPickerView]-10-[noteTextView]-10-|", options: [], metrics: nil, views: viewDict))
         
         constrains.append(NSLayoutConstraint(item: dateLabel,
                                              attribute: .top,
@@ -158,6 +167,7 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
         let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         
         let mapBarButton =  UIBarButtonItem(title: "Map", style: .done, target: self, action: #selector(addLocation))
+        
         
         self.setToolbarItems([photoBarButton, flexibleSpace, mapBarButton], animated: false)
         // Gestures
@@ -307,8 +317,8 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
         try! note?.managedObjectContext?.save()
     }
     
-    @objc func addLocation() {
-        
+    @objc func addLocation(_ sender : UIButton) {
+        self.showDatePicker(sender)
     }
     
     func noteTableViewController(_ viewController: NoteTableViewController, didSelectNote note: Note)
@@ -388,6 +398,34 @@ extension NoteViewByCodeController {
         } catch {
             print(error)
         }
+    }
+    
+    
+    func showDatePicker(_ sender: UIButton) {
+        let datePicker = UIDatePicker()//Date picker
+        datePicker.frame = CGRect(x: 0, y: 0, width: 320, height: 216)
+        datePicker.datePickerMode = .dateAndTime
+        datePicker.minuteInterval = 5
+        datePicker.addTarget(self, action: #selector(dateChanged(_:)), for: .valueChanged)
+    
+        let popoverView = UIView()
+        popoverView.backgroundColor = UIColor.clear
+        popoverView.addSubview(datePicker)
+        // here you can add tool bar with done and cancel buttons if required
+    
+        let popoverViewController = UIViewController()
+        popoverViewController.view = popoverView
+        popoverViewController.view.frame = CGRect(x: 0, y: 0, width: 320, height: 216)
+        popoverViewController.modalPresentationStyle = .popover
+        popoverViewController.preferredContentSize = CGSize(width: 320, height: 216)
+        popoverViewController.popoverPresentationController?.sourceView = sender // source button
+        popoverViewController.popoverPresentationController?.sourceRect = view.bounds // source button bounds
+        self.present(popoverViewController, animated: true, completion: nil)
+    
+    }
+    
+    @objc func dateChanged(_ datePicker: UIDatePicker) {
+        print("DATE :: \(datePicker.date)")
     }
     
 }
