@@ -9,6 +9,12 @@
 import UIKit
 import CoreData
 
+enum datePickerVariations : CGFloat {
+    case heighOpened = 214
+    case heighMarginClosed = 0
+    case marginOpen = 0.5
+}
+
 class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate, NotesViewControllerDelegate {
     
     let dateLabel = UILabel()
@@ -16,13 +22,17 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
     let titleTextField = UITextField()
     let noteTextView = UITextView()
     let notebookPickerView = UIPickerView()
-    let testButton = UIButton()
     
     let imageView = UIImageView()
     var topImgConstraint: NSLayoutConstraint!
     var bottonImgConstraint: NSLayoutConstraint!
     var leftImgConstraint: NSLayoutConstraint!
     var rightImgConstraint: NSLayoutConstraint!
+    
+    let testButton = UIButton()
+    let datePicker = UIDatePicker()
+    var heighDatePickerConstraint : NSLayoutConstraint!
+    var marginTopDatePickerConstraint : NSLayoutConstraint!
     
     var relativePoint: CGPoint!
     
@@ -76,9 +86,15 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
         
         testButton.titleLabel?.text = "TEST"
         testButton.backgroundColor = UIColor.blue
-        testButton.addTarget(self, action: #selector(addLocation), for: .touchUpInside)
+        testButton.addTarget(self, action: #selector(showDatePicker2), for: .touchUpInside)
         backView.addSubview(testButton)
         
+        //datePicker.frame = CGRect(x: 0, y: 0, width: 320, height: 216)
+        
+        datePicker.datePickerMode = .dateAndTime
+        datePicker.minuteInterval = 5
+        datePicker.addTarget(self, action: #selector(dateChanged(_:)), for: .valueChanged)
+        backView.addSubview(datePicker)
         
         
         // MARK: Autolayout
@@ -89,9 +105,10 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
         imageView.translatesAutoresizingMaskIntoConstraints = false;
         notebookPickerView.translatesAutoresizingMaskIntoConstraints = false;
         testButton.translatesAutoresizingMaskIntoConstraints = false
+        datePicker.translatesAutoresizingMaskIntoConstraints =  false
         
         
-        let viewDict = ["dateLabel":dateLabel, "noteTextView":noteTextView,"titleTextField":titleTextField, "expirationDate":expirationDate, "notebookPickerView":notebookPickerView, "testButton":testButton]
+        let viewDict = ["dateLabel":dateLabel, "noteTextView":noteTextView,"titleTextField":titleTextField, "expirationDate":expirationDate, "notebookPickerView":notebookPickerView, "testButton":testButton, "datePicker":datePicker]
         
         // Horizontals
         var constrains = NSLayoutConstraint.constraints(withVisualFormat: "|-10-[titleTextField]-10-[expirationDate]-10-[dateLabel]-10-|", options: [], metrics: nil, views: viewDict)
@@ -101,10 +118,11 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
         constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-10-[notebookPickerView]-10-|", options: [], metrics: nil, views: viewDict))
         
         constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-10-[testButton]-10-|", options: [], metrics: nil, views: viewDict))
+        constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-10-[datePicker]-10-|", options: [], metrics: nil, views: viewDict))
         
         // Vertical
         
-        constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "V:|-[dateLabel]-10-[testButton]-10-[notebookPickerView]-10-[noteTextView]-10-|", options: [], metrics: nil, views: viewDict))
+        constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "V:|-[dateLabel]-10-[testButton]-10-[datePicker]-10-[notebookPickerView]-10-[noteTextView]-10-|", options: [], metrics: nil, views: viewDict))
         
         constrains.append(NSLayoutConstraint(item: dateLabel,
                                              attribute: .top,
@@ -140,12 +158,17 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
         
         imgConstraints.append(NSLayoutConstraint(item: imageView, attribute: .height , relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 0, constant: 200))
         
-        
         imgConstraints.append(contentsOf: [topImgConstraint,bottonImgConstraint,leftImgConstraint,rightImgConstraint])
         
+        // DatePicker constraints
+        
+        heighDatePickerConstraint = NSLayoutConstraint(item: datePicker, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 0)
+        
+        marginTopDatePickerConstraint = NSLayoutConstraint(item: datePicker, attribute: .topMargin, relatedBy: .equal, toItem: testButton, attribute: .bottomMargin, multiplier: 1, constant: 0.0)
         
         backView.addConstraints(constrains)
         backView.addConstraints(imgConstraints)
+        backView.addConstraints([heighDatePickerConstraint, marginTopDatePickerConstraint])
         
         NSLayoutConstraint.deactivate([bottonImgConstraint,rightImgConstraint])
         
@@ -198,6 +221,165 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
         
     }
     
+    
+    override func viewDidLayoutSubviews()
+    {
+        var rect = view.convert(imageView.frame, to: noteTextView)
+        rect = rect.insetBy(dx: -15, dy: -15)
+        
+        let paths = UIBezierPath(rect: rect)
+        noteTextView.textContainer.exclusionPaths = [paths]
+    }
+
+
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        let image = info[UIImagePickerControllerOriginalImage] as! UIImage
+        imageView.image = image
+        
+        picker.dismiss(animated: true, completion: nil)
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        note?.title = textField.text
+        try! note?.managedObjectContext?.save()
+    }
+    
+    func noteTableViewController(_ viewController: NoteTableViewController, didSelectNote note: Note)
+    {
+        self.note = note
+        syncModel()
+    }
+    
+    func syncModel() {
+        titleTextField.text = note?.title
+    }
+
+}
+
+// MARK : - Picker
+extension NoteViewByCodeController : UIPickerViewDelegate, UIPickerViewDataSource {
+    
+    // MARK: - Delegates and data sources
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return self.notebooks!.count + 1
+    }
+    
+    // MARK: - Delegates
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        var pickerCellName : String = ""
+        if row == 0 {
+            pickerCellName = "SELECT"
+        } else {
+            if let name = self.notebooks![row - 1].name {
+                pickerCellName = name
+            }
+        }
+        
+        if note?.notebook?.name == pickerCellName {
+            notebookPickerView.selectRow(row, inComponent: 0, animated: true);
+        }
+        
+        return pickerCellName
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        if row > 0 {
+            setNotebook(row - 1);
+        }
+    }
+    
+}
+
+// MARK: - DAO
+extension NoteViewByCodeController {
+    
+    func loadData() {
+        let viewContext = DataManager.sharedManager.persistentContainer.viewContext
+        
+        let notebookFetchReq = NSFetchRequest<Notebook>(entityName: NOTEBOOK_ENTITY_NAME)
+        
+        let sortByName = NSSortDescriptor(key: "name", ascending: true)
+        
+        notebookFetchReq.sortDescriptors = [sortByName]
+        
+        do {
+            self.notebooks = try viewContext.fetch(notebookFetchReq);
+        } catch {
+            print("no se pudo obtener notebooks en note", error);
+        }
+    }
+    
+    func setNotebook(_ at: Int) {
+        let selectedNotebook = self.notebooks![at]
+        
+        self.note?.notebook = selectedNotebook
+        
+        let viewContex = self.note?.managedObjectContext
+        
+        do {
+           try viewContex?.save()
+        } catch {
+            print(error)
+        }
+    }
+}
+
+// MARK: - Actions
+extension NoteViewByCodeController {
+    func showDatePicker(_ sender: UIButton) {
+        let datePicker = UIDatePicker()//Date picker
+        //datePicker.frame = CGRect(x: 0, y: 0, width: 320, height: 216)
+        datePicker.translatesAutoresizingMaskIntoConstraints =  false
+        datePicker.datePickerMode = .dateAndTime
+        datePicker.minuteInterval = 5
+        datePicker.addTarget(self, action: #selector(dateChanged(_:)), for: .valueChanged)
+        
+        
+        
+        let popoverView = UIView()
+        popoverView.backgroundColor = UIColor.clear
+        popoverView.addSubview(datePicker)
+        // here you can add tool bar with done and cancel buttons if required
+        
+        let popoverViewController = UIViewController()
+        popoverViewController.view = popoverView
+        //popoverViewController.view.frame = CGRect(x: 0, y: 0, width: 320, height: 216)
+        popoverViewController.modalPresentationStyle = .popover
+        popoverViewController.preferredContentSize = CGSize(width: 320, height: 216)
+        popoverViewController.popoverPresentationController?.sourceView = sender // source button
+        popoverViewController.popoverPresentationController?.sourceRect = sender.bounds // source button bounds
+        self.present(popoverViewController, animated: true, completion: nil)
+        
+        
+    }
+    
+     @objc func showDatePicker2(_ sender: UIButton, animateTime: TimeInterval) {
+        datePicker.isHidden  = !datePicker.isHidden
+        let isShow = !datePicker.isHidden
+        UIView.animate(withDuration: 0.9) {
+            self.heighDatePickerConstraint.constant = (isShow ? datePickerVariations.heighOpened.rawValue : datePickerVariations.heighMarginClosed.rawValue)
+            
+            self.marginTopDatePickerConstraint.constant = (isShow ? datePickerVariations.marginOpen.rawValue : datePickerVariations.heighMarginClosed.rawValue)
+            
+            self.view.layoutIfNeeded()
+        }
+        
+    }
+    
+    @objc func dateChanged(_ datePicker: UIDatePicker) {
+        print("DATE :: \(datePicker.date)")
+        
+    }
+    
     @objc func userMoveImage(longPressGesture: UILongPressGestureRecognizer) {
         print("es continuado")
         
@@ -216,12 +398,10 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
             UIView.animate(withDuration: 0.1, animations: {
                 self.imageView.transform = CGAffineTransform(scaleX: 1, y: 1);
             })
-           
+            
         default:
             break
         }
-        
-        
     }
     
     @objc func closeKeyboard() {
@@ -260,19 +440,8 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
         }
     }
     
-    override func viewDidLayoutSubviews()
-    {
-        var rect = view.convert(imageView.frame, to: noteTextView)
-        rect = rect.insetBy(dx: -15, dy: -15)
+    @objc func addLocation(_ sender : UIButton) {
         
-        let paths = UIBezierPath(rect: rect)
-        noteTextView.textContainer.exclusionPaths = [paths]
-    }
-
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-
     }
     
     // MARK: Toolbar button actions.
@@ -304,128 +473,4 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
         
         present(actionSheetAlert, animated: true, completion: nil)
     }
-    
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-        let image = info[UIImagePickerControllerOriginalImage] as! UIImage
-        imageView.image = image
-        
-        picker.dismiss(animated: true, completion: nil)
-    }
-    
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        note?.title = textField.text
-        try! note?.managedObjectContext?.save()
-    }
-    
-    @objc func addLocation(_ sender : UIButton) {
-        self.showDatePicker(sender)
-    }
-    
-    func noteTableViewController(_ viewController: NoteTableViewController, didSelectNote note: Note)
-    {
-        self.note = note
-        syncModel()
-    }
-    
-    func syncModel() {
-        titleTextField.text = note?.title
-    }
-
-}
-
-// MARK : - Picker
-extension NoteViewByCodeController : UIPickerViewDelegate, UIPickerViewDataSource{
-    // MARK: - Delegates and data sources
-    func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        return 1
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return self.notebooks!.count + 1
-    }
-    
-    // MARK: - Delegates
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        var pickerCellName : String = ""
-        if row == 0 {
-            pickerCellName = "SELECT"
-        } else {
-            if let name = self.notebooks![row - 1].name {
-                pickerCellName = name
-            }
-        }
-        
-        if note?.notebook?.name == pickerCellName {
-            notebookPickerView.selectRow(row, inComponent: 0, animated: true);
-        }
-        
-        return pickerCellName
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        setNotebook(row - 1);
-    }
-    
-}
-
-extension NoteViewByCodeController {
-    
-    func loadData() {
-        let viewContext = DataManager.sharedManager.persistentContainer.viewContext
-        
-        let notebookFetchReq = NSFetchRequest<Notebook>(entityName: NOTEBOOK_ENTITY_NAME)
-        
-        let sortByName = NSSortDescriptor(key: "name", ascending: true)
-        
-        notebookFetchReq.sortDescriptors = [sortByName]
-        
-        do {
-            self.notebooks = try viewContext.fetch(notebookFetchReq);
-        } catch {
-            print("no se pudo obtener notebooks en note", error);
-        }
-    }
-    
-    func setNotebook(_ at: Int) {
-        let selectedNotebook = self.notebooks![at]
-        
-        self.note?.notebook = selectedNotebook
-        
-        let viewContex = self.note?.managedObjectContext
-        
-        do {
-           try viewContex?.save()
-        } catch {
-            print(error)
-        }
-    }
-    
-    
-    func showDatePicker(_ sender: UIButton) {
-        let datePicker = UIDatePicker()//Date picker
-        datePicker.frame = CGRect(x: 0, y: 0, width: 320, height: 216)
-        datePicker.datePickerMode = .dateAndTime
-        datePicker.minuteInterval = 5
-        datePicker.addTarget(self, action: #selector(dateChanged(_:)), for: .valueChanged)
-    
-        let popoverView = UIView()
-        popoverView.backgroundColor = UIColor.clear
-        popoverView.addSubview(datePicker)
-        // here you can add tool bar with done and cancel buttons if required
-    
-        let popoverViewController = UIViewController()
-        popoverViewController.view = popoverView
-        popoverViewController.view.frame = CGRect(x: 0, y: 0, width: 320, height: 216)
-        popoverViewController.modalPresentationStyle = .popover
-        popoverViewController.preferredContentSize = CGSize(width: 320, height: 216)
-        popoverViewController.popoverPresentationController?.sourceView = sender // source button
-        popoverViewController.popoverPresentationController?.sourceRect = view.bounds // source button bounds
-        self.present(popoverViewController, animated: true, completion: nil)
-    
-    }
-    
-    @objc func dateChanged(_ datePicker: UIDatePicker) {
-        print("DATE :: \(datePicker.date)")
-    }
-    
 }
