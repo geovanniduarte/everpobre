@@ -48,6 +48,11 @@
                     <rect key="frame" x="0.0" y="267" width="414" height="216"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                 </pickerView>
+                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rY0-jU-YSz">
+                    <rect key="frame" x="196" y="253" width="46" height="30"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <state key="normal" title="Button"/>
+                </button>
             </subviews>
             <color key="backgroundColor" red="0.9924977721924827" green="1" blue="0.97491346423410041" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>

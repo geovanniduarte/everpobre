@@ -18,7 +18,7 @@ enum datePickerVariations : CGFloat {
 class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate, NotesViewControllerDelegate {
     
     let dateLabel = UILabel()
-    let expirationDate = UILabel()
+    let expirationDate = UIButton()
     let titleTextField = UITextField()
     let noteTextView = UITextView()
     let notebookPickerView = UIPickerView()
@@ -54,17 +54,26 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
     }
     
     override func loadView() {
+        //let scrollParentView = UIScrollView()
         let backView = UIView()
+        //scrollParentView.addSubview(backView)
         backView.backgroundColor = .white
-        
+    
         // Configuro label
-        dateLabel.text = "25/02/2018"
+        if let creationDateDouble = note?.createdAtTi {
+            dateLabel.text = Date(timeIntervalSince1970: creationDateDouble).formattedDate()
+        }
+        
         backView.addSubview(dateLabel)
         
         // Configuro label
-        expirationDate.text = "03/04/2018"
-        backView.addSubview(expirationDate)
+        if let expirationDateDouble = note?.expirationDate {
+            expirationDate.setTitle(Date(timeIntervalSince1970: expirationDateDouble).formattedDate(), for: .normal)
+            expirationDate.setTitleColor(UIColor.init(red: 0.196, green: 0.3098, blue: 0.52, alpha: 1.0), for: .normal)
+            expirationDate.addTarget(self, action: #selector(showDatePicker2(_:animateTime:)), for: .touchUpInside)
+        }
         
+        backView.addSubview(expirationDate)
         // Configuro textField
         titleTextField.placeholder = "Tittle note"
         backView.addSubview(titleTextField)
@@ -87,13 +96,14 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
         testButton.titleLabel?.text = "TEST"
         testButton.backgroundColor = UIColor.blue
         testButton.addTarget(self, action: #selector(showDatePicker2), for: .touchUpInside)
-        backView.addSubview(testButton)
+        //backView.addSubview(testButton)
         
         //datePicker.frame = CGRect(x: 0, y: 0, width: 320, height: 216)
         
         datePicker.datePickerMode = .dateAndTime
         datePicker.minuteInterval = 5
         datePicker.addTarget(self, action: #selector(dateChanged(_:)), for: .valueChanged)
+        datePicker.isHidden = true
         backView.addSubview(datePicker)
         
         
@@ -117,12 +127,20 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
         
         constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-10-[notebookPickerView]-10-|", options: [], metrics: nil, views: viewDict))
         
-        constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-10-[testButton]-10-|", options: [], metrics: nil, views: viewDict))
+        //constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-10-[testButton]-10-|", options: [], metrics: nil, views: viewDict))
         constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-10-[datePicker]-10-|", options: [], metrics: nil, views: viewDict))
+        
+        // constratins para el backview (top, bottom, leading and trailing) as (0,0,0,0).
+        //let viewDictScroll = ["backView": backView, "view": view]
+        //var backViewConstraints = NSLayoutConstraint.constraints(withVisualFormat: "|-0-[backView]-0-|", options: [], metrics: nil, views: viewDictScroll)
+    
+        // TO-DO para el scrollview, (top, bottom, leading and trailing) as (0,0,0,0).
+        
+        // TO-DO view must have equal width and equal height
         
         // Vertical
         
-        constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "V:|-[dateLabel]-10-[testButton]-10-[datePicker]-10-[notebookPickerView]-10-[noteTextView]-10-|", options: [], metrics: nil, views: viewDict))
+        constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "V:|-[dateLabel]-10-[datePicker]-10-[notebookPickerView]-10-[noteTextView]-10-|", options: [], metrics: nil, views: viewDict))
         
         constrains.append(NSLayoutConstraint(item: dateLabel,
                                              attribute: .top,
@@ -144,7 +162,9 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
                                              toItem: dateLabel,
                                              attribute: .lastBaseline,
                                              multiplier: 1, constant: 0))
-    
+        
+        //backViewConstraints.append(contentsOf:NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[backView]-0-|", options: [], metrics: nil, views: viewDictScroll))
+        
         // Img view constrains
         topImgConstraint = NSLayoutConstraint(item: imageView, attribute: .top, relatedBy: .equal, toItem: noteTextView, attribute: .top, multiplier: 1, constant: 20)
         
@@ -164,7 +184,9 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
         
         heighDatePickerConstraint = NSLayoutConstraint(item: datePicker, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 0)
         
-        marginTopDatePickerConstraint = NSLayoutConstraint(item: datePicker, attribute: .topMargin, relatedBy: .equal, toItem: testButton, attribute: .bottomMargin, multiplier: 1, constant: 0.0)
+        marginTopDatePickerConstraint = NSLayoutConstraint(item: datePicker, attribute: .topMargin, relatedBy: .equal, toItem: expirationDate, attribute: .bottomMargin, multiplier: 1, constant: 0.0)
+        
+        //scrollParentView.addConstraints(backViewConstraints)
         
         backView.addConstraints(constrains)
         backView.addConstraints(imgConstraints)
@@ -363,9 +385,11 @@ extension NoteViewByCodeController {
     }
     
      @objc func showDatePicker2(_ sender: UIButton, animateTime: TimeInterval) {
-        datePicker.isHidden  = !datePicker.isHidden
+        datePicker.isHidden = !datePicker.isHidden
+        print(datePicker.isHidden)
         let isShow = !datePicker.isHidden
-        UIView.animate(withDuration: 0.9) {
+        
+        UIView.animate(withDuration: 0.5) {
             self.heighDatePickerConstraint.constant = (isShow ? datePickerVariations.heighOpened.rawValue : datePickerVariations.heighMarginClosed.rawValue)
             
             self.marginTopDatePickerConstraint.constant = (isShow ? datePickerVariations.marginOpen.rawValue : datePickerVariations.heighMarginClosed.rawValue)
@@ -377,7 +401,10 @@ extension NoteViewByCodeController {
     
     @objc func dateChanged(_ datePicker: UIDatePicker) {
         print("DATE :: \(datePicker.date)")
-        
+        print(datePicker.date.formattedDate())
+        self.expirationDate.setTitle(datePicker.date.formattedDate(), for: .normal)
+        note?.expirationDate = datePicker.date.timeIntervalSince1970
+        try! note?.managedObjectContext?.save()
     }
     
     @objc func userMoveImage(longPressGesture: UILongPressGestureRecognizer) {

@@ -138,12 +138,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Everpobre/Controller/Note/NoteViewByCodeController.swift"
-            timestampString = "546390801.827228"
+            timestampString = "546479218.473924"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "390"
-            endingLineNumber = "390"
-            landmarkName = "setNotebook(_:)"
+            startingLineNumber = "417"
+            endingLineNumber = "417"
+            landmarkName = "userMoveImage(longPressGesture:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -154,12 +154,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Everpobre/Controller/Note/NoteViewByCodeController.swift"
-            timestampString = "546390801.827767"
+            timestampString = "546479218.474797"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "394"
-            endingLineNumber = "394"
-            landmarkName = "setNotebook(_:)"
+            startingLineNumber = "421"
+            endingLineNumber = "421"
+            landmarkName = "userMoveImage(longPressGesture:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -170,12 +170,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Everpobre/Controller/Note/NoteViewByCodeController.swift"
-            timestampString = "546390801.828112"
+            timestampString = "546479218.475215"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "397"
-            endingLineNumber = "397"
-            landmarkName = "setNotebook(_:)"
+            startingLineNumber = "424"
+            endingLineNumber = "424"
+            landmarkName = "userMoveImage(longPressGesture:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -186,12 +186,76 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Everpobre/Controller/Note/NoteViewByCodeController.swift"
-            timestampString = "546390801.828427"
+            timestampString = "546479218.475613"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "399"
-            endingLineNumber = "399"
-            landmarkName = "setNotebook(_:)"
+            startingLineNumber = "426"
+            endingLineNumber = "426"
+            landmarkName = "userMoveImage(longPressGesture:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Everpobre/Controller/Note/NoteViewByCodeController.swift"
+            timestampString = "546479218.476137"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "392"
+            endingLineNumber = "392"
+            landmarkName = "showDatePicker2(_:animateTime:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Everpobre.NoteViewByCodeController.showDatePicker2(__ObjC.UIButton, animateTime: Swift.Double) -&gt; ()"
+                  moduleName = "Everpobre"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/mobilesevenminds/Desktop/Everpobre/Everpobre/Controller/Note/NoteViewByCodeController.swift"
+                  timestampString = "546468762.879305"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "371"
+                  endingLineNumber = "371"
+                  offsetFromSymbolStart = "473">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 () -&gt; () in Everpobre.NoteViewByCodeController.showDatePicker2(__ObjC.UIButton, animateTime: Swift.Double) -&gt; ()"
+                  moduleName = "Everpobre"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/mobilesevenminds/Desktop/Everpobre/Everpobre/Controller/Note/NoteViewByCodeController.swift"
+                  timestampString = "546468762.885026"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "372"
+                  endingLineNumber = "372"
+                  offsetFromSymbolStart = "35">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Everpobre/Controller/Note/NoteViewByCodeController.swift"
+            timestampString = "546479218.4766051"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "395"
+            endingLineNumber = "395"
+            landmarkName = "showDatePicker2(_:animateTime:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
