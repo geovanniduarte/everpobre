@@ -483,6 +483,7 @@ extension NoteViewByCodeController {
     
     @objc func addLocation(_ sender : UIButton) {
         let mapViewController = MapViewController()
+        mapViewController.delegate = self
         navigationController?.pushViewController(mapViewController, animated: true)
     }
     
@@ -514,5 +515,17 @@ extension NoteViewByCodeController {
         actionSheetAlert.addAction(cancel)
         
         present(actionSheetAlert, animated: true, completion: nil)
+    }
+}
+
+extension NoteViewByCodeController : MapViewControllerDelegate {
+    func saveLocation(_ sender: MapViewController, location: String?) {
+        note?.location = location
+        do {
+           try note?.managedObjectContext?.save()
+           
+        } catch {
+            print(error)
+        }
     }
 }
