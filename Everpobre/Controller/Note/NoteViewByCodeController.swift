@@ -403,7 +403,6 @@ extension NoteViewByCodeController {
     
      @objc func showDatePicker2(_ sender: UIButton, animateTime: TimeInterval) {
         datePicker.isHidden = !datePicker.isHidden
-        print(datePicker.isHidden)
         let isShow = !datePicker.isHidden
         
         UIView.animate(withDuration: 0.5) {
@@ -417,8 +416,6 @@ extension NoteViewByCodeController {
     }
     
     @objc func dateChanged(_ datePicker: UIDatePicker) {
-        print("DATE :: \(datePicker.date)")
-        print(datePicker.date.formattedDate())
         self.expirationDate.setTitle(datePicker.date.formattedDate(), for: .normal)
         note?.expirationDate = datePicker.date.timeIntervalSince1970
         try! note?.managedObjectContext?.save()
@@ -485,7 +482,8 @@ extension NoteViewByCodeController {
     }
     
     @objc func addLocation(_ sender : UIButton) {
-        
+        let mapViewController = MapViewController()
+        navigationController?.pushViewController(mapViewController, animated: true)
     }
     
     // MARK: Toolbar button actions.

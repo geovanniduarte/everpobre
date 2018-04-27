@@ -21,6 +21,8 @@
 		BCC80620207FF4DF00A1B230 /* Everpobre.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = BCC8061E207FF4DF00A1B230 /* Everpobre.xcdatamodeld */; };
 		BCC806222080016200A1B230 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC806212080016200A1B230 /* DataManager.swift */; };
 		BCC806242080131000A1B230 /* NoteTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC806232080131000A1B230 /* NoteTableViewController.swift */; };
+		BCD61FA52093C029000E1472 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCD61FA32093C029000E1472 /* MapViewController.swift */; };
+		BCD61FA62093C029000E1472 /* MapViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = BCD61FA42093C029000E1472 /* MapViewController.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +42,8 @@
 		BCC8061F207FF4DF00A1B230 /* Everpobre.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Everpobre.xcdatamodel; sourceTree = "<group>"; };
 		BCC806212080016200A1B230 /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		BCC806232080131000A1B230 /* NoteTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteTableViewController.swift; sourceTree = "<group>"; };
+		BCD61FA32093C029000E1472 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
+		BCD61FA42093C029000E1472 /* MapViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MapViewController.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,6 +73,8 @@
 				BC70A1EE2051CFA200990E75 /* NoteViewController.xib */,
 				BC70A1F12051F17100990E75 /* NoteViewByCodeController.swift */,
 				BCC806232080131000A1B230 /* NoteTableViewController.swift */,
+				BCD61FA32093C029000E1472 /* MapViewController.swift */,
+				BCD61FA42093C029000E1472 /* MapViewController.xib */,
 			);
 			path = Note;
 			sourceTree = "<group>";
@@ -201,6 +207,7 @@
 				BC70A1EC2051CF4900990E75 /* Launch Screen.storyboard in Resources */,
 				BC70A1F02051CFA200990E75 /* NoteViewController.xib in Resources */,
 				BC58D9FF208A3C7700A2DF42 /* FormCell.xib in Resources */,
+				BCD61FA62093C029000E1472 /* MapViewController.xib in Resources */,
 				BC70A1E12051CEAD00990E75 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -212,6 +219,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BCD61FA52093C029000E1472 /* MapViewController.swift in Sources */,
 				BC934D2F209279E2003C6FBB /* Foundation+Additions.swift in Sources */,
 				BC2B68372086AD89006E406E /* ManagedObject.swift in Sources */,
 				BC58D9FC208A3A3400A2DF42 /* NotebookTableTableViewController.swift in Sources */,
