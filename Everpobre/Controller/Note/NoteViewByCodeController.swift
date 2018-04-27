@@ -54,9 +54,16 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
     }
     
     override func loadView() {
-        //let scrollParentView = UIScrollView()
+        
+        let parentView = UIView()
+        
         let backView = UIView()
-        //scrollParentView.addSubview(backView)
+        
+        let scrollView = UIScrollView()
+        
+        parentView.addSubview(scrollView)
+        scrollView.addSubview(backView)
+        
         backView.backgroundColor = .white
     
         // Configuro label
@@ -116,6 +123,8 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
         notebookPickerView.translatesAutoresizingMaskIntoConstraints = false;
         testButton.translatesAutoresizingMaskIntoConstraints = false
         datePicker.translatesAutoresizingMaskIntoConstraints =  false
+        backView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
         
         
         let viewDict = ["dateLabel":dateLabel, "noteTextView":noteTextView,"titleTextField":titleTextField, "expirationDate":expirationDate, "notebookPickerView":notebookPickerView, "testButton":testButton, "datePicker":datePicker]
@@ -127,17 +136,18 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
         
         constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-10-[notebookPickerView]-10-|", options: [], metrics: nil, views: viewDict))
         
-        //constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-10-[testButton]-10-|", options: [], metrics: nil, views: viewDict))
         constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-10-[datePicker]-10-|", options: [], metrics: nil, views: viewDict))
         
         // constratins para el backview (top, bottom, leading and trailing) as (0,0,0,0).
-        //let viewDictScroll = ["backView": backView, "view": view]
-        //var backViewConstraints = NSLayoutConstraint.constraints(withVisualFormat: "|-0-[backView]-0-|", options: [], metrics: nil, views: viewDictScroll)
+        let viewDictScroll = ["backView": backView, "scrollView": scrollView]
+        var backViewConstraints = NSLayoutConstraint.constraints(withVisualFormat: "|-0-[backView]-0-|", options: [], metrics: nil, views: viewDictScroll)
+    
     
         // TO-DO para el scrollview, (top, bottom, leading and trailing) as (0,0,0,0).
+        var scrollViewConstraints = NSLayoutConstraint.constraints(withVisualFormat: "|-0-[scrollView]-0-|", options: [], metrics: nil, views: viewDictScroll)
         
         // TO-DO view must have equal width and equal height
-        
+        backViewConstraints.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "[backView(==scrollView)]", options:[], metrics: nil, views: viewDictScroll))
         // Vertical
         
         constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "V:|-[dateLabel]-10-[datePicker]-10-[notebookPickerView]-10-[noteTextView]-10-|", options: [], metrics: nil, views: viewDict))
@@ -163,7 +173,14 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
                                              attribute: .lastBaseline,
                                              multiplier: 1, constant: 0))
         
-        //backViewConstraints.append(contentsOf:NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[backView]-0-|", options: [], metrics: nil, views: viewDictScroll))
+        backViewConstraints.append(contentsOf:NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[backView]-0-|", options: [], metrics: nil, views: viewDictScroll))
+        
+        scrollViewConstraints.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[scrollView]-0-|", options: [], metrics: nil, views: viewDictScroll))
+        
+        
+        let equalHeightBackViewConst = NSLayoutConstraint(item: backView, attribute: .height, relatedBy: .equal, toItem: scrollView, attribute: .height, multiplier: 1, constant: 0)
+        equalHeightBackViewConst.priority = UILayoutPriority(rawValue: 250)
+        backViewConstraints.append(equalHeightBackViewConst)
         
         // Img view constrains
         topImgConstraint = NSLayoutConstraint(item: imageView, attribute: .top, relatedBy: .equal, toItem: noteTextView, attribute: .top, multiplier: 1, constant: 20)
@@ -186,15 +203,15 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
         
         marginTopDatePickerConstraint = NSLayoutConstraint(item: datePicker, attribute: .topMargin, relatedBy: .equal, toItem: expirationDate, attribute: .bottomMargin, multiplier: 1, constant: 0.0)
         
-        //scrollParentView.addConstraints(backViewConstraints)
-        
+        parentView.addConstraints(scrollViewConstraints)
+        scrollView.addConstraints(backViewConstraints)
         backView.addConstraints(constrains)
         backView.addConstraints(imgConstraints)
         backView.addConstraints([heighDatePickerConstraint, marginTopDatePickerConstraint])
         
         NSLayoutConstraint.deactivate([bottonImgConstraint,rightImgConstraint])
         
-        self.view = backView
+        self.view = parentView
     }
 
     override func viewDidLoad() {
