@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreData
+import MapKit
 
 enum datePickerVariations : CGFloat {
     case heighOpened = 214
@@ -22,15 +23,17 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
     let titleTextField = UITextField()
     let noteTextView = UITextView()
     let notebookPickerView = UIPickerView()
-    
     let imageView = UIImageView()
+    let testButton = UIButton()
+    let datePicker = UIDatePicker()
+    let mapView = MKMapView()
+    
     var topImgConstraint: NSLayoutConstraint!
     var bottonImgConstraint: NSLayoutConstraint!
     var leftImgConstraint: NSLayoutConstraint!
     var rightImgConstraint: NSLayoutConstraint!
     
-    let testButton = UIButton()
-    let datePicker = UIDatePicker()
+    
     var heighDatePickerConstraint : NSLayoutConstraint!
     var marginTopDatePickerConstraint : NSLayoutConstraint!
     
@@ -88,7 +91,6 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
         // Configuro noteTextView
         noteTextView.text = "Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda."
         noteTextView.backgroundColor = UIColor.blue
-        
         backView.addSubview(noteTextView)
         
         // Configuro imageView
@@ -100,12 +102,12 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
         notebookPickerView.dataSource = self
         backView.addSubview(notebookPickerView)
         
-        testButton.titleLabel?.text = "TEST"
-        testButton.backgroundColor = UIColor.blue
-        testButton.addTarget(self, action: #selector(showDatePicker2), for: .touchUpInside)
-        //backView.addSubview(testButton)
+        //if (self.note?.location != nil) {
+            mapView.delegate = self
+            backView.addSubview(mapView)
+        //}
         
-        //datePicker.frame = CGRect(x: 0, y: 0, width: 320, height: 216)
+        
         
         datePicker.datePickerMode = .dateAndTime
         datePicker.minuteInterval = 5
@@ -125,9 +127,10 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
         datePicker.translatesAutoresizingMaskIntoConstraints =  false
         backView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.translatesAutoresizingMaskIntoConstraints = false
+        mapView.translatesAutoresizingMaskIntoConstraints = false
         
         
-        let viewDict = ["dateLabel":dateLabel, "noteTextView":noteTextView,"titleTextField":titleTextField, "expirationDate":expirationDate, "notebookPickerView":notebookPickerView, "testButton":testButton, "datePicker":datePicker]
+        let viewDict = ["dateLabel":dateLabel, "noteTextView":noteTextView,"titleTextField":titleTextField, "expirationDate":expirationDate, "notebookPickerView":notebookPickerView, "testButton":testButton, "datePicker":datePicker, "mapView":mapView]
         
         // Horizontals
         var constrains = NSLayoutConstraint.constraints(withVisualFormat: "|-10-[titleTextField]-10-[expirationDate]-10-[dateLabel]-10-|", options: [], metrics: nil, views: viewDict)
@@ -137,6 +140,8 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
         constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-10-[notebookPickerView]-10-|", options: [], metrics: nil, views: viewDict))
         
         constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-10-[datePicker]-10-|", options: [], metrics: nil, views: viewDict))
+        
+        constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-10-[mapView]-10-|", options: [], metrics: nil, views: viewDict))
         
         // constratins para el backview (top, bottom, leading and trailing) as (0,0,0,0).
         let viewDictScroll = ["backView": backView, "scrollView": scrollView]
@@ -148,9 +153,11 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
         
         // TO-DO view must have equal width and equal height
         backViewConstraints.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "[backView(==scrollView)]", options:[], metrics: nil, views: viewDictScroll))
-        // Vertical
         
-        constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "V:|-[dateLabel]-10-[datePicker]-10-[notebookPickerView]-10-[noteTextView]-10-|", options: [], metrics: nil, views: viewDict))
+        
+        // Verticals
+        
+        constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "V:|-[dateLabel]-10-[datePicker]-10-[mapView]-10-[notebookPickerView]-10-[noteTextView]-10-|", options: [], metrics: nil, views: viewDict))
         
         constrains.append(NSLayoutConstraint(item: dateLabel,
                                              attribute: .top,
@@ -172,6 +179,22 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
                                              toItem: dateLabel,
                                              attribute: .lastBaseline,
                                              multiplier: 1, constant: 0))
+        if note?.location != nil {
+            constrains.append(NSLayoutConstraint(item: mapView,
+                                                 attribute: .height,
+                                                 relatedBy: .equal,
+                                                 toItem: notebookPickerView,
+                                                 attribute: .height,
+                                                 multiplier: 1, constant: 0))
+        } else {
+            constrains.append(NSLayoutConstraint(item: mapView,
+                                                 attribute: .height,
+                                                 relatedBy: .equal,
+                                                 toItem: nil,
+                                                 attribute: .notAnAttribute,
+                                                 multiplier: 1, constant: 0))
+        }
+       
         
         backViewConstraints.append(contentsOf:NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[backView]-0-|", options: [], metrics: nil, views: viewDictScroll))
         
@@ -518,7 +541,8 @@ extension NoteViewByCodeController {
     }
 }
 
-extension NoteViewByCodeController : MapViewControllerDelegate {
+//MARK: - Delegate implementation maps
+extension NoteViewByCodeController : MapViewControllerDelegate, MKMapViewDelegate {
     func saveLocation(_ sender: MapViewController, location: String?) {
         note?.location = location
         do {
@@ -526,6 +550,18 @@ extension NoteViewByCodeController : MapViewControllerDelegate {
            
         } catch {
             print(error)
+        }
+    }
+    
+    func mapViewDidFinishLoadingMap(_ mapView: MKMapView) {
+        if let location = note?.location {
+            let arrLocation = location.split(separator: ",")
+            if arrLocation.count == 2 {
+                let latitude = Double(arrLocation[0])
+                let longitude = Double(arrLocation[1])
+                let coordinateRegion = MKCoordinateRegion(center: CLLocationCoordinate2D.init(latitude: latitude!, longitude: longitude!), span: MKCoordinateSpan(latitudeDelta: 0.04, longitudeDelta: 0.04))
+                mapView.setRegion(coordinateRegion, animated: true)
+            }
         }
     }
 }
