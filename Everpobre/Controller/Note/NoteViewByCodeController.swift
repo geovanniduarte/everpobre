@@ -16,7 +16,7 @@ enum datePickerVariations : CGFloat {
     case marginOpen = 0.5
 }
 
-class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate, NotesViewControllerDelegate {
+class NoteViewByCodeController: UIViewController , UINavigationControllerDelegate, UITextFieldDelegate, NotesViewControllerDelegate {
     
     let dateLabel = UILabel()
     let expirationDate = UIButton()
@@ -58,14 +58,14 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
     
     override func loadView() {
         
-        let parentView = UIView()
+        //let parentView = UIView()
         
         let backView = UIView()
         
-        let scrollView = UIScrollView()
+        //let scrollView = UIScrollView()
         
-        parentView.addSubview(scrollView)
-        scrollView.addSubview(backView)
+        //parentView.addSubview(scrollView)
+        //scrollView.addSubview(backView)
         
         backView.backgroundColor = .white
     
@@ -125,8 +125,8 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
         notebookPickerView.translatesAutoresizingMaskIntoConstraints = false;
         testButton.translatesAutoresizingMaskIntoConstraints = false
         datePicker.translatesAutoresizingMaskIntoConstraints =  false
-        backView.translatesAutoresizingMaskIntoConstraints = false
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        //backView.translatesAutoresizingMaskIntoConstraints = false
+        //scrollView.translatesAutoresizingMaskIntoConstraints = false
         mapView.translatesAutoresizingMaskIntoConstraints = false
         
         
@@ -144,15 +144,15 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
         constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-10-[mapView]-10-|", options: [], metrics: nil, views: viewDict))
         
         // constratins para el backview (top, bottom, leading and trailing) as (0,0,0,0).
-        let viewDictScroll = ["backView": backView, "scrollView": scrollView]
-        var backViewConstraints = NSLayoutConstraint.constraints(withVisualFormat: "|-0-[backView]-0-|", options: [], metrics: nil, views: viewDictScroll)
+        //let viewDictScroll = ["backView": backView, "scrollView": scrollView]
+        //var backViewConstraints = NSLayoutConstraint.constraints(withVisualFormat: "|-0-[backView]-0-|", options: [], metrics: nil, views: viewDictScroll)
     
     
         // TO-DO para el scrollview, (top, bottom, leading and trailing) as (0,0,0,0).
-        var scrollViewConstraints = NSLayoutConstraint.constraints(withVisualFormat: "|-0-[scrollView]-0-|", options: [], metrics: nil, views: viewDictScroll)
+        //var scrollViewConstraints = NSLayoutConstraint.constraints(withVisualFormat: "|-0-[scrollView]-0-|", options: [], metrics: nil, views: viewDictScroll)
         
         // TO-DO view must have equal width and equal height
-        backViewConstraints.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "[backView(==scrollView)]", options:[], metrics: nil, views: viewDictScroll))
+        //backViewConstraints.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "[backView(==scrollView)]", options:[], metrics: nil, views: viewDictScroll))
         
         
         // Verticals
@@ -196,14 +196,14 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
         }
        
         
-        backViewConstraints.append(contentsOf:NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[backView]-0-|", options: [], metrics: nil, views: viewDictScroll))
+    //backViewConstraints.append(contentsOf:NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[backView]-0-|", options: [], metrics: nil, views: viewDictScroll))
         
-        scrollViewConstraints.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[scrollView]-0-|", options: [], metrics: nil, views: viewDictScroll))
+        //scrollViewConstraints.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[scrollView]-0-|", options: [], metrics: nil, views: viewDictScroll))
         
         
-        let equalHeightBackViewConst = NSLayoutConstraint(item: backView, attribute: .height, relatedBy: .equal, toItem: scrollView, attribute: .height, multiplier: 1, constant: 0)
-        equalHeightBackViewConst.priority = UILayoutPriority(rawValue: 250)
-        backViewConstraints.append(equalHeightBackViewConst)
+        //let equalHeightBackViewConst = NSLayoutConstraint(item: backView, attribute: .height, relatedBy: .equal, toItem: scrollView, attribute: .height, multiplier: 1, constant: 0)
+        //equalHeightBackViewConst.priority = UILayoutPriority(rawValue: 250)
+        //backViewConstraints.append(equalHeightBackViewConst)
         
         // Img view constrains
         topImgConstraint = NSLayoutConstraint(item: imageView, attribute: .top, relatedBy: .equal, toItem: noteTextView, attribute: .top, multiplier: 1, constant: 20)
@@ -226,15 +226,15 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
         
         marginTopDatePickerConstraint = NSLayoutConstraint(item: datePicker, attribute: .topMargin, relatedBy: .equal, toItem: expirationDate, attribute: .bottomMargin, multiplier: 1, constant: 0.0)
         
-        parentView.addConstraints(scrollViewConstraints)
-        scrollView.addConstraints(backViewConstraints)
+        //parentView.addConstraints(scrollViewConstraints)
+        //scrollView.addConstraints(backViewConstraints)
         backView.addConstraints(constrains)
         backView.addConstraints(imgConstraints)
         backView.addConstraints([heighDatePickerConstraint, marginTopDatePickerConstraint])
         
         NSLayoutConstraint.deactivate([bottonImgConstraint,rightImgConstraint])
         
-        self.view = parentView
+        self.view = backView
     }
 
     override func viewDidLoad() {
@@ -297,13 +297,6 @@ class NoteViewByCodeController: UIViewController, UIImagePickerControllerDelegat
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
 
-    }
-    
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-        let image = info[UIImagePickerControllerOriginalImage] as! UIImage
-        imageView.image = image
-        
-        picker.dismiss(animated: true, completion: nil)
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
@@ -445,7 +438,6 @@ extension NoteViewByCodeController {
     }
     
     @objc func userMoveImage(longPressGesture: UILongPressGestureRecognizer) {
-        print("es continuado")
         
         switch longPressGesture.state {
         case .began:
@@ -454,6 +446,7 @@ extension NoteViewByCodeController {
                 self.imageView.transform = CGAffineTransform(scaleX: 1.2, y: 1.2);
             })
         case .changed:
+            print("es continuado")
             let location = longPressGesture.location(in: noteTextView)
             leftImgConstraint.constant = location.x - relativePoint.x
             topImgConstraint.constant = location.y - relativePoint.y
@@ -522,6 +515,7 @@ extension NoteViewByCodeController {
         let useCamera = UIAlertAction(title: "Camera", style: .default) {
             (alertAction) in
             imagePicker.sourceType = .camera
+            
             self.present(imagePicker, animated: true, completion: nil)
         }
         
@@ -564,4 +558,15 @@ extension NoteViewByCodeController : MapViewControllerDelegate, MKMapViewDelegat
             }
         }
     }
+}
+
+extension NoteViewByCodeController : UIImagePickerControllerDelegate {
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        let image = info[UIImagePickerControllerOriginalImage] as! UIImage
+        imageView.image = image
+        
+        picker.dismiss(animated: true, completion: nil)
+    }
+    
 }
