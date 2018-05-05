@@ -65,7 +65,7 @@ class NoteTableViewController: UITableViewController, NSFetchedResultsController
             cell = UITableViewCell(style: .default, reuseIdentifier: "reuseIdentifier")
         }
         print("\(fetchedResultController.object(at: indexPath).title) \(fetchedResultController.object(at: indexPath).notebook?.name) \(indexPath)")
-        cell?.textLabel?.text = "\(fetchedResultController.object(at: indexPath).title) \(fetchedResultController.object(at: indexPath).notebook?.name)"
+        cell?.textLabel?.text = fetchedResultController.object(at: indexPath).title
         return cell!
     }
     
