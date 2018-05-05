@@ -9,10 +9,10 @@
 import UIKit
 
 extension Date {
-    func  formattedDate() -> String {
+    func  formattedDate(_ format: String) -> String {
         let dateFormatter = DateFormatter()
         //dateFormatter.dateStyle = .short
-        dateFormatter.dateFormat = "dd/MM/yyyy"
+        dateFormatter.dateFormat = format
         let date = dateFormatter.string(from: self)
         return date
     }

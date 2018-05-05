@@ -16,8 +16,11 @@ enum datePickerVariations : CGFloat {
     case marginOpen = 0.5
 }
 
+let IMAGE_ENTITY_NAME = "Image"
+
 class NoteViewByCodeController: UIViewController , UINavigationControllerDelegate, UITextFieldDelegate, NotesViewControllerDelegate {
     
+    let backView = UIView()
     let dateLabel = UILabel()
     let expirationDate = UIButton()
     let titleTextField = UITextField()
@@ -60,8 +63,6 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
         
         //let parentView = UIView()
         
-        let backView = UIView()
-        
         //let scrollView = UIScrollView()
         
         //parentView.addSubview(scrollView)
@@ -71,14 +72,14 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
     
         // Configuro label
         if let creationDateDouble = note?.createdAtTi {
-            dateLabel.text = Date(timeIntervalSince1970: creationDateDouble).formattedDate()
+            dateLabel.text = Date(timeIntervalSince1970: creationDateDouble).formattedDate("dd/MM/yyyy")
         }
         
         backView.addSubview(dateLabel)
         
         // Configuro label
         if let expirationDateDouble = note?.expirationDate {
-            expirationDate.setTitle(Date(timeIntervalSince1970: expirationDateDouble).formattedDate(), for: .normal)
+            expirationDate.setTitle(Date(timeIntervalSince1970: expirationDateDouble).formattedDate("dd/MM/yyyy"), for: .normal)
             expirationDate.setTitleColor(UIColor.init(red: 0.196, green: 0.3098, blue: 0.52, alpha: 1.0), for: .normal)
             expirationDate.addTarget(self, action: #selector(showDatePicker2(_:animateTime:)), for: .touchUpInside)
         }
@@ -386,6 +387,18 @@ extension NoteViewByCodeController {
             print(error)
         }
     }
+    
+    func addImageBD(url: String, leftConstant: Int16, topConstant: Int16) {
+        let privateMOC = DataManager.sharedManager.persistentContainer.newBackgroundContext()
+        
+        privateMOC.perform {
+            let image = NSEntityDescription.insertNewObject(forEntityName: IMAGE_ENTITY_NAME, into: privateMOC) as! Image
+            image.localUrl = url
+            image.leftConstant = leftConstant
+            image.topConstant = topConstant
+            try! privateMOC.save()
+        }
+    }
 }
 
 // MARK: - Actions
@@ -432,7 +445,7 @@ extension NoteViewByCodeController {
     }
     
     @objc func dateChanged(_ datePicker: UIDatePicker) {
-        self.expirationDate.setTitle(datePicker.date.formattedDate(), for: .normal)
+        self.expirationDate.setTitle(datePicker.date.formattedDate("dd/MM/yyyy"), for: .normal)
         note?.expirationDate = datePicker.date.timeIntervalSince1970
         try! note?.managedObjectContext?.save()
     }
@@ -563,10 +576,51 @@ extension NoteViewByCodeController : MapViewControllerDelegate, MKMapViewDelegat
 extension NoteViewByCodeController : UIImagePickerControllerDelegate {
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-        let image = info[UIImagePickerControllerOriginalImage] as! UIImage
-        imageView.image = image
+        if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
+            addImage(image)
+            imageView.image = image
+            picker.dismiss(animated: true, completion: nil)
+        }
+    }
+    
+    func getDocumentsDirectory() -> URL {
+        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        return paths[0]
+    }
+    
+    func addImageFile(_ image: UIImage) -> String? {
+        var fileName : String?
+        if let data = UIImagePNGRepresentation(image) {
+            let createdDate = Date().formattedDate("dd-MM-yyyy_hh:mm:ss")
+            let fileNameURL = getDocumentsDirectory().appendingPathComponent("image_\(createdDate).png")
+            do {
+                try data.write(to: fileNameURL)
+                fileName = fileNameURL.absoluteString
+            } catch {
+               print(error)
+            }
+        }
+        return fileName
+    }
+    
+    func addImageView(_ image: UIImage) -> [Int16] {
+        let newImageView = UIImageView(image: image)
+        newImageView.translatesAutoresizingMaskIntoConstraints = false
+        backView.addSubview(imageView)
+        let leftConstant = 0
+        let topConstant = 0
+        let leftConstraint = NSLayoutConstraint(item: newImageView, attribute: .left, relatedBy: .equal, toItem: noteTextView, attribute: .left, multiplier: 1, constant: CGFloat(leftConstant))
         
-        picker.dismiss(animated: true, completion: nil)
+        let topConstraint = NSLayoutConstraint(item: newImageView, attribute: .top, relatedBy: .equal, toItem: noteTextView, attribute: .top, multiplier: 1, constant: CGFloat(topConstant))
+        backView.addConstraints([leftConstraint, topConstraint])
+        return [Int16(leftConstant),Int16(topConstant)]
+    }
+    
+    func addImage(_ image: UIImage) {
+        if let fileName = addImageFile(image) {
+             let constants = addImageView(image)
+             addImageBD(url: fileName, leftConstant: constants[0], topConstant: constants[1])
+        }
     }
     
 }
