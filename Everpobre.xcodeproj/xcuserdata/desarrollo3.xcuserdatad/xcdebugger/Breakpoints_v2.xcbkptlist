@@ -6,16 +6,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Everpobre/Controller/Note/NoteViewByCodeController.swift"
-            timestampString = "547245972.22155"
+            timestampString = "547286183.823642"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "621"
-            endingLineNumber = "621"
-            landmarkName = "addImage(_:)"
+            startingLineNumber = "402"
+            endingLineNumber = "402"
+            landmarkName = "addImageBD(url:leftConstant:topConstant:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -26,12 +26,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Everpobre/Controller/Note/NoteViewByCodeController.swift"
-            timestampString = "547245972.262212"
+            timestampString = "547286183.8246109"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "620"
-            endingLineNumber = "620"
-            landmarkName = "addImage(_:)"
+            startingLineNumber = "404"
+            endingLineNumber = "404"
+            landmarkName = "addImageBD(url:leftConstant:topConstant:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -42,27 +42,171 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Everpobre/Controller/Note/NoteViewByCodeController.swift"
-            timestampString = "547245972.262827"
+            timestampString = "547286183.8251801"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "624"
-            endingLineNumber = "624"
-            landmarkName = "addImage(_:)"
+            startingLineNumber = "422"
+            endingLineNumber = "422"
+            landmarkName = "editImageLocationBD(with:left:top:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "No"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Everpobre/Controller/Note/NoteViewByCodeController.swift"
-            timestampString = "547245972.263414"
+            timestampString = "547286183.825698"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "595"
-            endingLineNumber = "595"
+            startingLineNumber = "692"
+            endingLineNumber = "692"
+            landmarkName = "loadImages()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Everpobre.NoteViewByCodeController.loadImages() -&gt; ()"
+                  moduleName = "Everpobre"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/desarrollo3/Desktop/entrega-iosavanzado/Everpobre/Everpobre/Controller/Note/NoteViewByCodeController.swift"
+                  timestampString = "547286184.1551141"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "692"
+                  endingLineNumber = "692"
+                  offsetFromSymbolStart = "30">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Any) -&gt; () in Everpobre.NoteViewByCodeController.loadImages() -&gt; ()"
+                  moduleName = "Everpobre"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/desarrollo3/Desktop/entrega-iosavanzado/Everpobre/Everpobre/Controller/Note/NoteViewByCodeController.swift"
+                  timestampString = "547286184.158247"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "693"
+                  endingLineNumber = "693"
+                  offsetFromSymbolStart = "25">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Everpobre/Controller/Note/NoteViewByCodeController.swift"
+            timestampString = "547286183.826063"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "697"
+            endingLineNumber = "697"
+            landmarkName = "loadImages()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Everpobre/Controller/Note/NoteViewByCodeController.swift"
+            timestampString = "547286183.8264771"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "693"
+            endingLineNumber = "693"
+            landmarkName = "loadImages()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Everpobre/Controller/Note/NoteViewByCodeController.swift"
+            timestampString = "547286183.8267699"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "696"
+            endingLineNumber = "696"
+            landmarkName = "loadImages()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Everpobre/Controller/Note/NoteViewByCodeController.swift"
+            timestampString = "547286183.827085"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "699"
+            endingLineNumber = "699"
+            landmarkName = "loadImages()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Everpobre.NoteViewByCodeController.loadImages() -&gt; ()"
+                  moduleName = "Everpobre"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/desarrollo3/Desktop/entrega-iosavanzado/Everpobre/Everpobre/Controller/Note/NoteViewByCodeController.swift"
+                  timestampString = "547286184.180366"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "699"
+                  endingLineNumber = "699"
+                  offsetFromSymbolStart = "281">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Any) -&gt; () in Everpobre.NoteViewByCodeController.loadImages() -&gt; ()"
+                  moduleName = "Everpobre"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/desarrollo3/Desktop/entrega-iosavanzado/Everpobre/Everpobre/Controller/Note/NoteViewByCodeController.swift"
+                  timestampString = "547286184.183112"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "699"
+                  endingLineNumber = "699"
+                  offsetFromSymbolStart = "2549">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Everpobre/Controller/Note/NoteViewByCodeController.swift"
+            timestampString = "547286183.8273619"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "636"
+            endingLineNumber = "636"
             landmarkName = "addImageFile(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -70,96 +214,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "No"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Everpobre/Controller/Note/NoteViewByCodeController.swift"
-            timestampString = "547245972.263908"
+            timestampString = "547286183.827661"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "597"
-            endingLineNumber = "597"
+            startingLineNumber = "635"
+            endingLineNumber = "635"
             landmarkName = "addImageFile(_:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Everpobre/Controller/Note/NoteViewByCodeController.swift"
-            timestampString = "547245972.264326"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "600"
-            endingLineNumber = "600"
-            landmarkName = "addImageFile(_:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Everpobre/Controller/Note/NoteViewByCodeController.swift"
-            timestampString = "547245972.264801"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "598"
-            endingLineNumber = "598"
-            landmarkName = "addImageFile(_:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Everpobre/Controller/Note/NoteViewByCodeController.swift"
-            timestampString = "547245972.265165"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "615"
-            endingLineNumber = "615"
-            landmarkName = "addImageView(_:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Everpobre/Controller/Note/NoteViewByCodeController.swift"
-            timestampString = "547245972.265566"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "603"
-            endingLineNumber = "603"
-            landmarkName = "addImageFile(_:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Everpobre/Controller/Note/NoteViewByCodeController.swift"
-            timestampString = "547245972.265982"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "616"
-            endingLineNumber = "616"
-            landmarkName = "addImageView(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

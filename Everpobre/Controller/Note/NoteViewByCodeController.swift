@@ -17,16 +17,16 @@ enum datePickerVariations : CGFloat {
 }
 
 let IMAGE_ENTITY_NAME = "Image"
-
+typealias ImageContraintsPairs = [String: [NSLayoutConstraint]]
 class NoteViewByCodeController: UIViewController , UINavigationControllerDelegate, UITextFieldDelegate, NotesViewControllerDelegate {
     
     let backView = UIView()
     let dateLabel = UILabel()
-    let expirationDate = UIButton()
+    let expirationDate = UIButton() //textField .
     let titleTextField = UITextField()
     let noteTextView = UITextView()
     let notebookPickerView = UIPickerView()
-    let imageView = UIImageView()
+    var imageView = UIImageView()
     let testButton = UIButton()
     let datePicker = UIDatePicker()
     let mapView = MKMapView()
@@ -39,6 +39,8 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
     
     var heighDatePickerConstraint : NSLayoutConstraint!
     var marginTopDatePickerConstraint : NSLayoutConstraint!
+    
+    var imagesConstraints : ImageContraintsPairs!
     
     var relativePoint: CGPoint!
     
@@ -67,6 +69,7 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
         
         //parentView.addSubview(scrollView)
         //scrollView.addSubview(backView)
+        imagesConstraints = [:]
         
         backView.backgroundColor = .white
     
@@ -93,10 +96,6 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
         noteTextView.text = "Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda."
         noteTextView.backgroundColor = UIColor.blue
         backView.addSubview(noteTextView)
-        
-        // Configuro imageView
-        imageView.backgroundColor = .red
-        backView.addSubview(imageView)
         
         //configuro notebook picker
         notebookPickerView.delegate =  self
@@ -132,7 +131,7 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
         
         
         let viewDict = ["dateLabel":dateLabel, "noteTextView":noteTextView,"titleTextField":titleTextField, "expirationDate":expirationDate, "notebookPickerView":notebookPickerView, "testButton":testButton, "datePicker":datePicker, "mapView":mapView]
-        
+
         // Horizontals
         var constrains = NSLayoutConstraint.constraints(withVisualFormat: "|-10-[titleTextField]-10-[expirationDate]-10-[dateLabel]-10-|", options: [], metrics: nil, views: viewDict)
         
@@ -207,19 +206,19 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
         //backViewConstraints.append(equalHeightBackViewConst)
         
         // Img view constrains
-        topImgConstraint = NSLayoutConstraint(item: imageView, attribute: .top, relatedBy: .equal, toItem: noteTextView, attribute: .top, multiplier: 1, constant: 20)
+        //topImgConstraint = NSLayoutConstraint(item: imageView, attribute: .top, relatedBy: .equal, toItem: noteTextView, attribute: .top, multiplier: 1, constant: 20)
         
-        bottonImgConstraint = NSLayoutConstraint(item: imageView, attribute: .bottom, relatedBy: .equal, toItem: noteTextView, attribute: .bottom, multiplier: 1, constant: -20)
+        //bottonImgConstraint = NSLayoutConstraint(item: imageView, attribute: .bottom, relatedBy: .equal, toItem: noteTextView, attribute: .bottom, multiplier: 1, constant: -20)
         
-        leftImgConstraint = NSLayoutConstraint(item: imageView, attribute: .left, relatedBy: .equal, toItem: noteTextView, attribute: .left, multiplier: 1, constant: 20)
+        //leftImgConstraint = NSLayoutConstraint(item: imageView, attribute: .left, relatedBy: .equal, toItem: noteTextView, attribute: .left, multiplier: 1, constant: 20)
         
-        rightImgConstraint = NSLayoutConstraint(item: imageView, attribute: .right, relatedBy: .equal, toItem: noteTextView, attribute: .right, multiplier: 1, constant: -20)
+        //rightImgConstraint = NSLayoutConstraint(item: imageView, attribute: .right, relatedBy: .equal, toItem: noteTextView, attribute: .right, multiplier: 1, constant: -20)
         
-        var imgConstraints = [NSLayoutConstraint(item: imageView, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 0, constant: 100)]
+        //var imgConstraints = [NSLayoutConstraint(item: imageView, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 0, constant: 100)]
         
-        imgConstraints.append(NSLayoutConstraint(item: imageView, attribute: .height , relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 0, constant: 200))
+        //imgConstraints.append(NSLayoutConstraint(item: imageView, attribute: .height , relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 0, constant: 200))
         
-        imgConstraints.append(contentsOf: [topImgConstraint,bottonImgConstraint,leftImgConstraint,rightImgConstraint])
+        //imgConstraints.append(contentsOf: [topImgConstraint,bottonImgConstraint,leftImgConstraint,rightImgConstraint])
         
         // DatePicker constraints
         
@@ -230,10 +229,12 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
         //parentView.addConstraints(scrollViewConstraints)
         //scrollView.addConstraints(backViewConstraints)
         backView.addConstraints(constrains)
-        backView.addConstraints(imgConstraints)
+        //backView.addConstraints(imgConstraints)
         backView.addConstraints([heighDatePickerConstraint, marginTopDatePickerConstraint])
         
-        NSLayoutConstraint.deactivate([bottonImgConstraint,rightImgConstraint])
+        //NSLayoutConstraint.deactivate([bottonImgConstraint,rightImgConstraint])
+        
+        loadImages()
         
         self.view = backView
     }
@@ -396,7 +397,30 @@ extension NoteViewByCodeController {
             image.localUrl = url
             image.leftConstant = leftConstant
             image.topConstant = topConstant
+            print("images count: ",self.note?.images?.count)
+            let noteCopy = privateMOC.object(with: (self.note?.objectID)!)
+            image.note = noteCopy as? Note
             try! privateMOC.save()
+            print("images count: ",self.note?.images?.count)
+        }
+    }
+    
+    func findImage(by url: String) -> Image? {
+        let predicate = NSPredicate(format: "localUrl = %s", argumentArray: [url])
+        let images = self.note?.images?.filtered(using: predicate)
+        return images?.first as? Image
+    }
+    
+    func editImageLocationBD(with url: String, left: CGFloat, top: CGFloat) {
+        let privateMOC = DataManager.sharedManager.persistentContainer.newBackgroundContext()
+        
+        privateMOC.perform {
+            if var image = self.findImage(by: url) {
+                image = privateMOC.object(with: image.objectID) as! Image
+                image.leftConstant = Int16(left)
+                image.topConstant = Int16(top)
+                try! privateMOC.save()
+            }
         }
     }
 }
@@ -451,22 +475,31 @@ extension NoteViewByCodeController {
     }
     
     @objc func userMoveImage(longPressGesture: UILongPressGestureRecognizer) {
-        
+        print("es continuado")
+    
         switch longPressGesture.state {
         case .began:
-            relativePoint = longPressGesture.location(in: longPressGesture.view)
+            imageView = longPressGesture.view as! UIImageView
+            relativePoint = longPressGesture.location(in: imageView)
+            if let id = imageView.accessibilityIdentifier {
+                let constraints = imagesConstraints[id]
+                leftImgConstraint = constraints?[0]
+                topImgConstraint = constraints?[1]
+            }
+            
             UIView.animate(withDuration: 0.1, animations: {
                 self.imageView.transform = CGAffineTransform(scaleX: 1.2, y: 1.2);
             })
         case .changed:
-            print("es continuado")
+            
             let location = longPressGesture.location(in: noteTextView)
-            leftImgConstraint.constant = location.x - relativePoint.x
-            topImgConstraint.constant = location.y - relativePoint.y
+            leftImgConstraint?.constant = location.x - relativePoint.x
+            topImgConstraint?.constant = location.y - relativePoint.y
             
         case .ended, .cancelled:
             UIView.animate(withDuration: 0.1, animations: {
                 self.imageView.transform = CGAffineTransform(scaleX: 1, y: 1);
+                self.editImageLocationBD(with: self.imageView.accessibilityIdentifier!, left: self.leftImgConstraint.constant, top: self.topImgConstraint.constant)
             })
             
         default:
@@ -577,8 +610,7 @@ extension NoteViewByCodeController : UIImagePickerControllerDelegate {
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
-            addImage(image)
-            imageView.image = image
+            addNewImage(image)
             picker.dismiss(animated: true, completion: nil)
         }
     }
@@ -588,10 +620,16 @@ extension NoteViewByCodeController : UIImagePickerControllerDelegate {
         return paths[0]
     }
     
+    func fileInDocumentsDirectory(filename: String) -> String {
+        let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        let fileURL = documentsURL.appendingPathComponent(filename).absoluteString
+        return fileURL
+    }
+    
     func addImageFile(_ image: UIImage) -> String? {
         var fileName : String?
         if let data = UIImagePNGRepresentation(image) {
-            let createdDate = Date().formattedDate("dd-MM-yyyy_hh:mm:ss")
+            let createdDate = Date().formattedDate("dd-MM-yyyy_hh-mm-ss")
             let fileNameURL = getDocumentsDirectory().appendingPathComponent("image_\(createdDate).png")
             do {
                 try data.write(to: fileNameURL)
@@ -603,23 +641,61 @@ extension NoteViewByCodeController : UIImagePickerControllerDelegate {
         return fileName
     }
     
-    func addImageView(_ image: UIImage) -> [Int16] {
+    func addImageView(_ image: UIImage, with identifier: String?, leftConstant: Int16?, topConstant: Int16?) -> [Int16] {
         let newImageView = UIImageView(image: image)
         newImageView.translatesAutoresizingMaskIntoConstraints = false
-        backView.addSubview(imageView)
-        let leftConstant = 0
-        let topConstant = 0
-        let leftConstraint = NSLayoutConstraint(item: newImageView, attribute: .left, relatedBy: .equal, toItem: noteTextView, attribute: .left, multiplier: 1, constant: CGFloat(leftConstant))
+        newImageView.isUserInteractionEnabled = true
+        newImageView.accessibilityIdentifier = identifier
+        backView.addSubview(newImageView)
         
-        let topConstraint = NSLayoutConstraint(item: newImageView, attribute: .top, relatedBy: .equal, toItem: noteTextView, attribute: .top, multiplier: 1, constant: CGFloat(topConstant))
-        backView.addConstraints([leftConstraint, topConstraint])
-        return [Int16(leftConstant),Int16(topConstant)]
+        var leftC = Int16(0)
+        var topC =  Int16(0)
+        
+        if let left = leftConstant {
+            leftC = left
+        }
+        
+        if let top = topConstant {
+            topC = top
+        }
+        
+        let leftConstraint = NSLayoutConstraint(item: newImageView, attribute: .left, relatedBy: .equal, toItem: noteTextView, attribute: .left, multiplier: 1, constant: CGFloat(leftC))
+        
+        let topConstraint = NSLayoutConstraint(item: newImageView, attribute: .top, relatedBy: .equal, toItem: noteTextView, attribute: .top, multiplier: 1, constant: CGFloat(topC))
+        
+        if let id = identifier {
+             imagesConstraints[id] = [leftConstraint, topConstraint]
+        }
+    
+        let moveViewGesture = UILongPressGestureRecognizer(target: self, action: #selector(userMoveImage))
+        
+        newImageView.addGestureRecognizer(moveViewGesture)
+        
+        var constraints = [leftConstraint, topConstraint]
+        
+        constraints.append(NSLayoutConstraint(item: newImageView, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 0, constant: 100))
+        
+        constraints.append(NSLayoutConstraint(item: newImageView, attribute: .height , relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 0, constant: 200))
+        
+        backView.addConstraints(constraints)
+        return [Int16(leftC),Int16(topC)]
     }
     
-    func addImage(_ image: UIImage) {
+    func addNewImage(_ image: UIImage) {
         if let fileName = addImageFile(image) {
-             let constants = addImageView(image)
+            let constants = addImageView(image, with: fileName, leftConstant: nil, topConstant: nil)
              addImageBD(url: fileName, leftConstant: constants[0], topConstant: constants[1])
+        }
+    }
+    
+    func loadImages() {
+        self.note?.images?.forEach { image in
+            let img = image as! Image
+            print(img.localUrl!)
+            print(UIImage(contentsOfFile: fileInDocumentsDirectory(filename: img.localUrl!)))
+            if let picture =  UIImage(contentsOfFile: img.localUrl!) {
+                self.addImageView(picture, with: img.localUrl!, leftConstant: img.leftConstant, topConstant: img.topConstant)
+            }
         }
     }
     
