@@ -101,20 +101,15 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
         notebookPickerView.delegate =  self
         notebookPickerView.dataSource = self
         backView.addSubview(notebookPickerView)
-        
-        //if (self.note?.location != nil) {
-            mapView.delegate = self
-            backView.addSubview(mapView)
-        //}
-        
-        
-        
+    
+        mapView.delegate = self
+        backView.addSubview(mapView)
+
         datePicker.datePickerMode = .dateAndTime
         datePicker.minuteInterval = 5
         datePicker.addTarget(self, action: #selector(dateChanged(_:)), for: .valueChanged)
         datePicker.isHidden = true
         backView.addSubview(datePicker)
-        
         
         // MARK: Autolayout
         dateLabel.translatesAutoresizingMaskIntoConstraints = false // no use autoresizing
@@ -125,10 +120,7 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
         notebookPickerView.translatesAutoresizingMaskIntoConstraints = false;
         testButton.translatesAutoresizingMaskIntoConstraints = false
         datePicker.translatesAutoresizingMaskIntoConstraints =  false
-        //backView.translatesAutoresizingMaskIntoConstraints = false
-        //scrollView.translatesAutoresizingMaskIntoConstraints = false
         mapView.translatesAutoresizingMaskIntoConstraints = false
-        
         
         let viewDict = ["dateLabel":dateLabel, "noteTextView":noteTextView,"titleTextField":titleTextField, "expirationDate":expirationDate, "notebookPickerView":notebookPickerView, "testButton":testButton, "datePicker":datePicker, "mapView":mapView]
 
@@ -143,21 +135,9 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
         
         constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-10-[mapView]-10-|", options: [], metrics: nil, views: viewDict))
         
-        // constratins para el backview (top, bottom, leading and trailing) as (0,0,0,0).
-        //let viewDictScroll = ["backView": backView, "scrollView": scrollView]
-        //var backViewConstraints = NSLayoutConstraint.constraints(withVisualFormat: "|-0-[backView]-0-|", options: [], metrics: nil, views: viewDictScroll)
-    
-    
-        // TO-DO para el scrollview, (top, bottom, leading and trailing) as (0,0,0,0).
-        //var scrollViewConstraints = NSLayoutConstraint.constraints(withVisualFormat: "|-0-[scrollView]-0-|", options: [], metrics: nil, views: viewDictScroll)
-        
-        // TO-DO view must have equal width and equal height
-        //backViewConstraints.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "[backView(==scrollView)]", options:[], metrics: nil, views: viewDictScroll))
-        
-        
         // Verticals
         
-        constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "V:|-[dateLabel]-10-[datePicker]-10-[mapView]-10-[notebookPickerView]-10-[noteTextView]-10-|", options: [], metrics: nil, views: viewDict))
+        constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "V:[dateLabel]-10-[datePicker]-10-[mapView]-10-[notebookPickerView]-10-[noteTextView]-10-|", options: [], metrics: nil, views: viewDict))
         
         constrains.append(NSLayoutConstraint(item: dateLabel,
                                              attribute: .top,
@@ -195,44 +175,12 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
                                                  multiplier: 1, constant: 0))
         }
        
-        
-    //backViewConstraints.append(contentsOf:NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[backView]-0-|", options: [], metrics: nil, views: viewDictScroll))
-        
-        //scrollViewConstraints.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[scrollView]-0-|", options: [], metrics: nil, views: viewDictScroll))
-        
-        
-        //let equalHeightBackViewConst = NSLayoutConstraint(item: backView, attribute: .height, relatedBy: .equal, toItem: scrollView, attribute: .height, multiplier: 1, constant: 0)
-        //equalHeightBackViewConst.priority = UILayoutPriority(rawValue: 250)
-        //backViewConstraints.append(equalHeightBackViewConst)
-        
-        // Img view constrains
-        //topImgConstraint = NSLayoutConstraint(item: imageView, attribute: .top, relatedBy: .equal, toItem: noteTextView, attribute: .top, multiplier: 1, constant: 20)
-        
-        //bottonImgConstraint = NSLayoutConstraint(item: imageView, attribute: .bottom, relatedBy: .equal, toItem: noteTextView, attribute: .bottom, multiplier: 1, constant: -20)
-        
-        //leftImgConstraint = NSLayoutConstraint(item: imageView, attribute: .left, relatedBy: .equal, toItem: noteTextView, attribute: .left, multiplier: 1, constant: 20)
-        
-        //rightImgConstraint = NSLayoutConstraint(item: imageView, attribute: .right, relatedBy: .equal, toItem: noteTextView, attribute: .right, multiplier: 1, constant: -20)
-        
-        //var imgConstraints = [NSLayoutConstraint(item: imageView, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 0, constant: 100)]
-        
-        //imgConstraints.append(NSLayoutConstraint(item: imageView, attribute: .height , relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 0, constant: 200))
-        
-        //imgConstraints.append(contentsOf: [topImgConstraint,bottonImgConstraint,leftImgConstraint,rightImgConstraint])
-        
-        // DatePicker constraints
-        
         heighDatePickerConstraint = NSLayoutConstraint(item: datePicker, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 0)
         
         marginTopDatePickerConstraint = NSLayoutConstraint(item: datePicker, attribute: .topMargin, relatedBy: .equal, toItem: expirationDate, attribute: .bottomMargin, multiplier: 1, constant: 0.0)
         
-        //parentView.addConstraints(scrollViewConstraints)
-        //scrollView.addConstraints(backViewConstraints)
         backView.addConstraints(constrains)
-        //backView.addConstraints(imgConstraints)
         backView.addConstraints([heighDatePickerConstraint, marginTopDatePickerConstraint])
-        
-        //NSLayoutConstraint.deactivate([bottonImgConstraint,rightImgConstraint])
         
         loadImages()
         
@@ -394,6 +342,7 @@ extension NoteViewByCodeController {
         
         privateMOC.perform {
             let image = NSEntityDescription.insertNewObject(forEntityName: IMAGE_ENTITY_NAME, into: privateMOC) as! Image
+            print("url save", url)
             image.localUrl = url
             image.leftConstant = leftConstant
             image.topConstant = topConstant
@@ -620,12 +569,6 @@ extension NoteViewByCodeController : UIImagePickerControllerDelegate {
         return paths[0]
     }
     
-    func fileInDocumentsDirectory(filename: String) -> String {
-        let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-        let fileURL = documentsURL.appendingPathComponent(filename).absoluteString
-        return fileURL
-    }
-    
     func addImageFile(_ image: UIImage) -> String? {
         var fileName : String?
         if let data = UIImagePNGRepresentation(image) {
@@ -683,17 +626,26 @@ extension NoteViewByCodeController : UIImagePickerControllerDelegate {
     
     func addNewImage(_ image: UIImage) {
         if let fileName = addImageFile(image) {
-            let constants = addImageView(image, with: fileName, leftConstant: nil, topConstant: nil)
-             addImageBD(url: fileName, leftConstant: constants[0], topConstant: constants[1])
+            print("url", fileName)
+            if let imgName = fileName.split(separator: "/").last?.description {
+                let constants = addImageView(image, with: imgName, leftConstant: nil, topConstant: nil)
+                addImageBD(url: imgName, leftConstant: constants[0], topConstant: constants[1])
+            }
+            
         }
+    }
+    
+    func getSavedImage(named: String) -> UIImage? {
+        if let dir = try? FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false) {
+            return UIImage(contentsOfFile: URL(fileURLWithPath: dir.absoluteString).appendingPathComponent(named).path)
+        }
+        return nil
     }
     
     func loadImages() {
         self.note?.images?.forEach { image in
             let img = image as! Image
-            print(img.localUrl!)
-            print(UIImage(contentsOfFile: fileInDocumentsDirectory(filename: img.localUrl!)))
-            if let picture =  UIImage(contentsOfFile: img.localUrl!) {
+            if let picture =  getSavedImage(named: img.localUrl!) {
                 self.addImageView(picture, with: img.localUrl!, leftConstant: img.leftConstant, topConstant: img.topConstant)
             }
         }
