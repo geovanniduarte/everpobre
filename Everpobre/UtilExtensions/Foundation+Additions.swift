@@ -9,10 +9,13 @@
 import UIKit
 
 extension Date {
-    func  formattedDate(_ format: String) -> String {
+    func  formattedDate(_ format: String?) -> String {
         let dateFormatter = DateFormatter()
-        //dateFormatter.dateStyle = .short
-        dateFormatter.dateFormat = format
+        if let fmt = format {
+            dateFormatter.dateFormat = fmt
+        } else {
+            dateFormatter.dateStyle = .short
+        }
         let date = dateFormatter.string(from: self)
         return date
     }

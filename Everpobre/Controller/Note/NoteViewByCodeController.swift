@@ -17,7 +17,7 @@ enum datePickerVariations : CGFloat {
 }
 
 let IMAGE_ENTITY_NAME = "Image"
-typealias ImageContraintsPairs = [String: [NSLayoutConstraint]]
+typealias ImageContraintsPairs = [UIImageView: [NSLayoutConstraint]]
 class NoteViewByCodeController: UIViewController , UINavigationControllerDelegate, UITextFieldDelegate, NotesViewControllerDelegate {
     
     let backView = UIView()
@@ -63,19 +63,13 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
     
     override func loadView() {
         
-        //let parentView = UIView()
-        
-        //let scrollView = UIScrollView()
-        
-        //parentView.addSubview(scrollView)
-        //scrollView.addSubview(backView)
         imagesConstraints = [:]
         
         backView.backgroundColor = .white
     
         // Configuro label
         if let creationDateDouble = note?.createdAtTi {
-            dateLabel.text = Date(timeIntervalSince1970: creationDateDouble).formattedDate("dd/MM/yyyy")
+            dateLabel.text = Date(timeIntervalSince1970: creationDateDouble).formattedDate(nil)
         }
         
         backView.addSubview(dateLabel)
@@ -166,6 +160,7 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
                                                  toItem: notebookPickerView,
                                                  attribute: .height,
                                                  multiplier: 1, constant: 0))
+ 
         } else {
             constrains.append(NSLayoutConstraint(item: mapView,
                                                  attribute: .height,
@@ -236,11 +231,8 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
     
     override func viewDidLayoutSubviews()
     {
-        var rect = view.convert(imageView.frame, to: noteTextView)
-        rect = rect.insetBy(dx: -15, dy: -15)
-        
-        let paths = UIBezierPath(rect: rect)
-        noteTextView.textContainer.exclusionPaths = [paths]
+        let paths = self.createExlusionPaths()
+        noteTextView.textContainer.exclusionPaths = paths
     }
 
 
@@ -346,11 +338,9 @@ extension NoteViewByCodeController {
             image.localUrl = url
             image.leftConstant = leftConstant
             image.topConstant = topConstant
-            print("images count: ",self.note?.images?.count)
             let noteCopy = privateMOC.object(with: (self.note?.objectID)!)
             image.note = noteCopy as? Note
             try! privateMOC.save()
-            print("images count: ",self.note?.images?.count)
         }
     }
     
@@ -418,23 +408,22 @@ extension NoteViewByCodeController {
     }
     
     @objc func dateChanged(_ datePicker: UIDatePicker) {
-        self.expirationDate.setTitle(datePicker.date.formattedDate("dd/MM/yyyy"), for: .normal)
+        self.expirationDate.setTitle(datePicker.date.formattedDate(nil), for: .normal)
         note?.expirationDate = datePicker.date.timeIntervalSince1970
         try! note?.managedObjectContext?.save()
     }
     
     @objc func userMoveImage(longPressGesture: UILongPressGestureRecognizer) {
-        print("es continuado")
     
         switch longPressGesture.state {
         case .began:
             imageView = longPressGesture.view as! UIImageView
             relativePoint = longPressGesture.location(in: imageView)
-            if let id = imageView.accessibilityIdentifier {
-                let constraints = imagesConstraints[id]
+            //if let id = imageView.accessibilityIdentifier {
+                let constraints = imagesConstraints[imageView]
                 leftImgConstraint = constraints?[0]
                 topImgConstraint = constraints?[1]
-            }
+           // }
             
             UIView.animate(withDuration: 0.1, animations: {
                 self.imageView.transform = CGAffineTransform(scaleX: 1.2, y: 1.2);
@@ -444,6 +433,7 @@ extension NoteViewByCodeController {
             let location = longPressGesture.location(in: noteTextView)
             leftImgConstraint?.constant = location.x - relativePoint.x
             topImgConstraint?.constant = location.y - relativePoint.y
+             print("es continuado", topImgConstraint?.constant)
             
         case .ended, .cancelled:
             UIView.animate(withDuration: 0.1, animations: {
@@ -587,9 +577,11 @@ extension NoteViewByCodeController : UIImagePickerControllerDelegate {
     func addImageView(_ image: UIImage, with identifier: String?, leftConstant: Int16?, topConstant: Int16?) -> [Int16] {
         let newImageView = UIImageView(image: image)
         newImageView.translatesAutoresizingMaskIntoConstraints = false
+       
         newImageView.isUserInteractionEnabled = true
+        let moveViewGesture = UILongPressGestureRecognizer(target: self, action: #selector(userMoveImage))
+        newImageView.addGestureRecognizer(moveViewGesture)
         newImageView.accessibilityIdentifier = identifier
-        backView.addSubview(newImageView)
         
         var leftC = Int16(0)
         var topC =  Int16(0)
@@ -601,25 +593,35 @@ extension NoteViewByCodeController : UIImagePickerControllerDelegate {
         if let top = topConstant {
             topC = top
         }
-        
+        // constraints de ubicacion
         let leftConstraint = NSLayoutConstraint(item: newImageView, attribute: .left, relatedBy: .equal, toItem: noteTextView, attribute: .left, multiplier: 1, constant: CGFloat(leftC))
+        leftConstraint.priority = .defaultHigh
         
         let topConstraint = NSLayoutConstraint(item: newImageView, attribute: .top, relatedBy: .equal, toItem: noteTextView, attribute: .top, multiplier: 1, constant: CGFloat(topC))
+        topConstraint.priority = .defaultHigh
         
-        if let id = identifier {
-             imagesConstraints[id] = [leftConstraint, topConstraint]
-        }
-    
-        let moveViewGesture = UILongPressGestureRecognizer(target: self, action: #selector(userMoveImage))
-        
-        newImageView.addGestureRecognizer(moveViewGesture)
+        //if let id = identifier {
+             imagesConstraints[newImageView] = [leftConstraint, topConstraint]
+        //}
         
         var constraints = [leftConstraint, topConstraint]
         
+        // constraints para el tamano
         constraints.append(NSLayoutConstraint(item: newImageView, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 0, constant: 100))
         
         constraints.append(NSLayoutConstraint(item: newImageView, attribute: .height , relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 0, constant: 200))
         
+        // constraints para que no se salga de la noteTextView
+        
+        constraints.append(NSLayoutConstraint(item: newImageView, attribute: .left, relatedBy: .greaterThanOrEqual, toItem: noteTextView, attribute: .left, multiplier: 1, constant: 0))
+        
+       // constraints.append(NSLayoutConstraint(item: newImageView, attribute: .bottom, relatedBy: .greaterThanOrEqual, toItem: noteTextView, attribute: .bottom, multiplier: 1, constant: 0))
+        
+        constraints.append(NSLayoutConstraint(item: newImageView, attribute: .right, relatedBy: .lessThanOrEqual, toItem: noteTextView, attribute: .right, multiplier: 1, constant: 0))
+        
+        constraints.append(NSLayoutConstraint(item: newImageView, attribute: .top, relatedBy: .greaterThanOrEqual, toItem: noteTextView, attribute: .top, multiplier: 1, constant: 0))
+        
+        backView.addSubview(newImageView)
         backView.addConstraints(constraints)
         return [Int16(leftC),Int16(topC)]
     }
@@ -649,6 +651,18 @@ extension NoteViewByCodeController : UIImagePickerControllerDelegate {
                 self.addImageView(picture, with: img.localUrl!, leftConstant: img.leftConstant, topConstant: img.topConstant)
             }
         }
+    }
+    
+    func createExlusionPaths() -> [UIBezierPath] {
+        var exclusionPaths = [UIBezierPath]()
+        imagesConstraints.forEach { imageViewKey, value  in
+            var rect = view.convert(imageViewKey.frame, to: noteTextView)
+            rect = rect.insetBy(dx: -15, dy: -15)
+            let path = UIBezierPath(rect: rect)
+            
+            exclusionPaths.append(path)
+        }
+        return exclusionPaths
     }
     
 }

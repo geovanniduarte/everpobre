@@ -179,8 +179,7 @@ extension NotebookTableTableViewController  {
                 self.markFormCell(indexPath, used:  true)
             }
         }
-        let imgUsar = cell?.imgUsar
-       // imgUsar?.image = UIImage(named: "targaryenSmall")
+       // cell?.imageView?.image = UIImage().
         return cell!
     }
     

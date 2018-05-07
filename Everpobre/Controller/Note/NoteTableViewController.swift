@@ -16,6 +16,7 @@ protocol NotesViewControllerDelegate: NSObjectProtocol {
 class NoteTableViewController: UITableViewController, NSFetchedResultsControllerDelegate, NotesViewControllerDelegate {
    
     var fetchedResultController : NSFetchedResultsController<Note>!
+    var fetchedResultController2 : NSFetchedResultsController<Notebook>!
     
     weak var delegate: NotesViewControllerDelegate?
     var defaultNotebook : Notebook?
@@ -25,7 +26,7 @@ class NoteTableViewController: UITableViewController, NSFetchedResultsController
         let addNote = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNewNoteInDefault))
         let addNotebook = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(addNewNotebookModal))
         navigationItem.rightBarButtonItems = [addNote, addNotebook]
-        loadData()
+        loadData2()
     }
   
     
@@ -40,44 +41,61 @@ class NoteTableViewController: UITableViewController, NSFetchedResultsController
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
-        print("INFO", fetchedResultController.sections!.count)
+        /*
         return fetchedResultController.sections!.count
+        */
+        return (fetchedResultController2.fetchedObjects?.count)!
     }
 
     // MARK: - Table view data source
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        /*
         let note = fetchedResultController.object(at: IndexPath(row: 0, section: section)) // obtiene el primer objeto de la seccion.
         
         let itsSectionName = note.notebook?.name
         
         return itsSectionName
+        */
+        return fetchedResultController2.fetchedObjects![section].name
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-         print("ROWS IN SECTION ", fetchedResultController.sections![section].name, fetchedResultController.sections![section].numberOfObjects)
+        /*
         return fetchedResultController.sections![section].numberOfObjects
+        */
+        return (fetchedResultController2.fetchedObjects![section].notes?.count)!
     }
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
         var cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier")
         if cell == nil {
             cell = UITableViewCell(style: .default, reuseIdentifier: "reuseIdentifier")
         }
+        /*
         print("\(fetchedResultController.object(at: indexPath).title) \(fetchedResultController.object(at: indexPath).notebook?.name) \(indexPath)")
         cell?.textLabel?.text = fetchedResultController.object(at: indexPath).title
         return cell!
+        */
+        let note = fetchedResultController2.fetchedObjects![indexPath.section].notes?.allObjects[indexPath.row] as! Note
+        cell?.textLabel?.text = "\(note.title) \(note.notebook?.name)"
+        return cell!
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        /*
+       let note = fetchedResultController.object(at: indexPath)
+       delegate?.noteTableViewController(self , didSelectNote: note)
+        */
+       let note = fetchedResultController2.fetchedObjects![indexPath.section].notes?.allObjects[indexPath.row] as! Note
+       delegate?.noteTableViewController(self , didSelectNote: note)
     }
     
     func pushNoteView(_ note: Note) {
         let noteViewController = NoteViewByCodeController()
         noteViewController.note = note
         navigationController?.pushViewController(noteViewController, animated: true)
-    }
-    
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-       let note = fetchedResultController.object(at: indexPath)
-       delegate?.noteTableViewController(self , didSelectNote: note)
     }
     
     @objc func addNewNotebookModal() {
@@ -156,6 +174,34 @@ extension NoteTableViewController {
         try! fetchedResultController.performFetch()
         
         fetchedResultController.delegate = self
+    }
+    
+    func loadData2() {
+        //Obtenemos el singleton del MOC
+        let notebookMOC = DataManager.sharedManager.persistentContainer.viewContext
+        
+        let fetchRequest = NSFetchRequest<Notebook>(entityName: "Notebook")
+        
+        //Establecemos los ordenamientos
+        let sortByDefault = NSSortDescriptor(key: "isDefault", ascending: false )
+        
+        let sortByName = NSSortDescriptor(key: "name", ascending: true)
+        fetchRequest.sortDescriptors = [sortByDefault, sortByName]
+        
+        //Establecemos filtros
+        let created24h = Date().timeIntervalSince1970 - 24 * 3600
+        let predicate = NSPredicate(format: "name != ''", created24h)
+        fetchRequest.predicate = predicate
+        
+        // MARK: Model Controller
+        fetchedResultController2 = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: notebookMOC, sectionNameKeyPath: nil, cacheName: nil)
+        do {
+        try fetchedResultController2.performFetch()
+        } catch {
+            print("ERROOR EN FETCHED", error)
+        }
+         print("FETCHED", fetchedResultController2.fetchedObjects?.count)
+        fetchedResultController2.delegate = self
     }
     
     func loadDefaultNotebook() {
