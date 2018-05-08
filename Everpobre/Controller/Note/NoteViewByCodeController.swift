@@ -30,6 +30,7 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
     let testButton = UIButton()
     let datePicker = UIDatePicker()
     let mapView = MKMapView()
+    let imageRotater = UIRotater()
     
     var topImgConstraint: NSLayoutConstraint!
     var bottonImgConstraint: NSLayoutConstraint!
@@ -105,6 +106,8 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
         datePicker.isHidden = true
         backView.addSubview(datePicker)
         
+        backView.addSubview(imageRotater)
+        
         // MARK: Autolayout
         dateLabel.translatesAutoresizingMaskIntoConstraints = false // no use autoresizing
         titleTextField.translatesAutoresizingMaskIntoConstraints = false
@@ -115,23 +118,26 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
         testButton.translatesAutoresizingMaskIntoConstraints = false
         datePicker.translatesAutoresizingMaskIntoConstraints =  false
         mapView.translatesAutoresizingMaskIntoConstraints = false
+        imageRotater.translatesAutoresizingMaskIntoConstraints = false
         
-        let viewDict = ["dateLabel":dateLabel, "noteTextView":noteTextView,"titleTextField":titleTextField, "expirationDate":expirationDate, "notebookPickerView":notebookPickerView, "testButton":testButton, "datePicker":datePicker, "mapView":mapView]
+        let viewDict = ["dateLabel":dateLabel, "noteTextView":noteTextView,"titleTextField":titleTextField, "expirationDate":expirationDate, "notebookPickerView":notebookPickerView, "testButton":testButton, "datePicker":datePicker, "mapView":mapView, "imageRotater":imageRotater]
 
         // Horizontals
         var constrains = NSLayoutConstraint.constraints(withVisualFormat: "|-10-[titleTextField]-10-[expirationDate]-10-[dateLabel]-10-|", options: [], metrics: nil, views: viewDict)
-        
-        constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-10-[noteTextView]-10-|", options: [], metrics: nil, views: viewDict))
-        
-        constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-10-[notebookPickerView]-10-|", options: [], metrics: nil, views: viewDict))
         
         constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-10-[datePicker]-10-|", options: [], metrics: nil, views: viewDict))
         
         constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-10-[mapView]-10-|", options: [], metrics: nil, views: viewDict))
         
+        constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-10-[notebookPickerView]-10-|", options: [], metrics: nil, views: viewDict))
+        
+        constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-10-[imageRotater]-10-|", options: [], metrics: nil, views: viewDict))
+        
+        constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-10-[noteTextView]-10-|", options: [], metrics: nil, views: viewDict))
+        
         // Verticals
         
-        constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "V:[dateLabel]-10-[datePicker]-10-[mapView]-10-[notebookPickerView]-10-[noteTextView]-10-|", options: [], metrics: nil, views: viewDict))
+        constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "V:[dateLabel]-10-[datePicker]-10-[mapView]-10-[notebookPickerView]-10-[imageRotater]-10-[noteTextView]-10-|", options: [], metrics: nil, views: viewDict))
         
         constrains.append(NSLayoutConstraint(item: dateLabel,
                                              attribute: .top,
@@ -181,6 +187,8 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
         
         self.view = backView
     }
+    
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()

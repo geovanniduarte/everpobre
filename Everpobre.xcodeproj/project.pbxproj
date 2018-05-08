@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9D46FA2820A1443800789B76 /* UIRotater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D46FA2720A1443800789B76 /* UIRotater.swift */; };
 		BC2B68372086AD89006E406E /* ManagedObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC2B68362086AD89006E406E /* ManagedObject.swift */; };
 		BC58D9FC208A3A3400A2DF42 /* NotebookTableTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC58D9FA208A3A3400A2DF42 /* NotebookTableTableViewController.swift */; };
 		BC58D9FF208A3C7700A2DF42 /* FormCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BC58D9FE208A3C7700A2DF42 /* FormCell.xib */; };
@@ -26,6 +27,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		9D46FA2720A1443800789B76 /* UIRotater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIRotater.swift; sourceTree = "<group>"; };
 		BC2B68362086AD89006E406E /* ManagedObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagedObject.swift; sourceTree = "<group>"; };
 		BC58D9FA208A3A3400A2DF42 /* NotebookTableTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotebookTableTableViewController.swift; sourceTree = "<group>"; };
 		BC58D9FE208A3C7700A2DF42 /* FormCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FormCell.xib; sourceTree = "<group>"; };
@@ -75,6 +77,7 @@
 				BCC806232080131000A1B230 /* NoteTableViewController.swift */,
 				BCD61FA32093C029000E1472 /* MapViewController.swift */,
 				BCD61FA42093C029000E1472 /* MapViewController.xib */,
+				9D46FA2720A1443800789B76 /* UIRotater.swift */,
 			);
 			path = Note;
 			sourceTree = "<group>";
@@ -224,6 +227,7 @@
 				BC2B68372086AD89006E406E /* ManagedObject.swift in Sources */,
 				BC58D9FC208A3A3400A2DF42 /* NotebookTableTableViewController.swift in Sources */,
 				BCC80620207FF4DF00A1B230 /* Everpobre.xcdatamodeld in Sources */,
+				9D46FA2820A1443800789B76 /* UIRotater.swift in Sources */,
 				BCC806222080016200A1B230 /* DataManager.swift in Sources */,
 				BC58DA01208A46E100A2DF42 /* FormCell.swift in Sources */,
 				BC70A1EF2051CFA200990E75 /* NoteViewController.swift in Sources */,
