@@ -15,8 +15,8 @@ class UIRotater: UIView {
     
     var sliderRotater = UISlider()
     var sliderZoomer = UISlider()
-    var rotaterValue = UITextView()
-    var zoomerValue = UITextView()
+    var rotaterValue = UILabel()
+    var zoomerValue = UILabel()
     
     weak var delegate : UIRotaterDelegate?
 
@@ -31,8 +31,7 @@ class UIRotater: UIView {
         sliderZoomer.minimumValue = 0.7
         addSubview(sliderZoomer)
         
-        rotaterValue.text = "VALOR: \(sliderRotater.minimumValue)"
-        rotaterValue.backgroundColor = .blue
+        rotaterValue.text = "\(sliderRotater.minimumValue)"
         addSubview(rotaterValue)
         
         zoomerValue.text = "\(sliderZoomer.minimumValue)"
@@ -47,14 +46,21 @@ class UIRotater: UIView {
         
         //HORIZONTAL
         var constrains = NSLayoutConstraint.constraints(withVisualFormat: "|-10-[sliderRotater]-10-[rotaterValue]-10-|", options: [], metrics: nil, views: viewDict)
-        constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "[rotaterValue(100)]", options: [], metrics: nil, views: viewDict))
         
         constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-10-[sliderZoomer]-10-[zoomerValue]-10-|", options: [], metrics: nil, views: viewDict))
+        
+        //constrains.append(NSLayoutConstraint(item: rotaterValue, attribute: .lastBaseline, relatedBy: .equal, toItem: sliderRotater, attribute: .lastBaseline, multiplier: 1, constant: 0))
+        
+        //constrains.append(NSLayoutConstraint(item: zoomerValue, attribute: .lastBaseline, relatedBy: .equal, toItem: sliderZoomer, attribute: .lastBaseline, multiplier: 1, constant: 0))
         
         //VERTICAL
         constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "V:|-10-[sliderRotater]-10-[sliderZoomer]-10-|", options: [], metrics: nil, views: viewDict))
         
+        constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "V:|-10-[rotaterValue]-10-[zoomerValue]-10-|", options: [], metrics: nil, views: viewDict))
+        x
         sliderRotater.addTarget(self, action: #selector(changeRotationValue), for: .valueChanged)
+        
+        zoomerValue.addTarget(self, action: #selector(changeZoomValue), for: .valueChanged)
         
         addConstraints(constrains)
     }
@@ -64,10 +70,12 @@ class UIRotater: UIView {
     }
     
     @objc func changeRotationValue(sender : UISlider) {
+        rotaterValue.text = "\(sender.value)"
         delegate?.rotater(self, didChangeRotation: sender.value)
     }
     
     @objc func changeZoomValue(sender : UISlider) {
+        zoomerValue.text = "\(sender.value)"
         delegate?.rotater(self, didChangeZoom: sender.value)
     }
     
