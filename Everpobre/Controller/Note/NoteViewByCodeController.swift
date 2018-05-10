@@ -10,7 +10,7 @@ import UIKit
 import CoreData
 import MapKit
 
-enum datePickerVariations : CGFloat {
+enum showViewVariations : CGFloat {
     case heighOpened = 214
     case heighMarginClosed = 0
     case marginOpen = 0.5
@@ -40,6 +40,9 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
     
     var heighDatePickerConstraint : NSLayoutConstraint!
     var marginTopDatePickerConstraint : NSLayoutConstraint!
+    
+    var heightRotaterConstraint : NSLayoutConstraint!
+    var marginTopRotaterConstraint : NSLayoutConstraint!
     
     var imagesConstraints : ImageContraintsPairs!
     
@@ -79,7 +82,7 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
         if let expirationDateDouble = note?.expirationDate {
             expirationDate.setTitle(Date(timeIntervalSince1970: expirationDateDouble).formattedDate("dd/MM/yyyy"), for: .normal)
             expirationDate.setTitleColor(UIColor.init(red: 0.196, green: 0.3098, blue: 0.52, alpha: 1.0), for: .normal)
-            expirationDate.addTarget(self, action: #selector(showDatePicker2(_:animateTime:)), for: .touchUpInside)
+            expirationDate.addTarget(self, action: #selector(showDatePicker(_:animateTime:)), for: .touchUpInside)
         }
         
         backView.addSubview(expirationDate)
@@ -106,6 +109,7 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
         datePicker.isHidden = true
         backView.addSubview(datePicker)
         
+        imageRotater.isHidden = true
         backView.addSubview(imageRotater)
         
         // MARK: Autolayout
@@ -180,8 +184,13 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
         
         marginTopDatePickerConstraint = NSLayoutConstraint(item: datePicker, attribute: .topMargin, relatedBy: .equal, toItem: expirationDate, attribute: .bottomMargin, multiplier: 1, constant: 0.0)
         
+        heightRotaterConstraint = NSLayoutConstraint(item: imageRotater, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 0)
+        
+        marginTopRotaterConstraint = NSLayoutConstraint(item: imageRotater, attribute: .topMargin, relatedBy: .equal, toItem: notebookPickerView, attribute: .bottomMargin, multiplier: 1, constant: 0)
+        
         backView.addConstraints(constrains)
         backView.addConstraints([heighDatePickerConstraint, marginTopDatePickerConstraint])
+        backView.addConstraints([heightRotaterConstraint,marginTopRotaterConstraint])
         
         loadImages()
         
@@ -223,10 +232,12 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
         doubleTapGesture.numberOfTapsRequired = 2
         
         imageView.addGestureRecognizer(doubleTapGesture)
+         
+         let moveViewGesture = UILongPressGestureRecognizer(target: self, action: #selector(userMoveImage))
+         
+         imageView.addGestureRecognizer(moveViewGesture)
         */
-        let moveViewGesture = UILongPressGestureRecognizer(target: self, action: #selector(userMoveImage))
         
-        imageView.addGestureRecognizer(moveViewGesture)
         
         loadData();
     }
@@ -374,41 +385,28 @@ extension NoteViewByCodeController {
 
 // MARK: - Actions
 extension NoteViewByCodeController {
-    func showDatePicker(_ sender: UIButton) {
-        let datePicker = UIDatePicker()//Date picker
-        //datePicker.frame = CGRect(x: 0, y: 0, width: 320, height: 216)
-        datePicker.translatesAutoresizingMaskIntoConstraints =  false
-        datePicker.datePickerMode = .dateAndTime
-        datePicker.minuteInterval = 5
-        datePicker.addTarget(self, action: #selector(dateChanged(_:)), for: .valueChanged)
-        
-        
-        
-        let popoverView = UIView()
-        popoverView.backgroundColor = UIColor.clear
-        popoverView.addSubview(datePicker)
-        // here you can add tool bar with done and cancel buttons if required
-        
-        let popoverViewController = UIViewController()
-        popoverViewController.view = popoverView
-        //popoverViewController.view.frame = CGRect(x: 0, y: 0, width: 320, height: 216)
-        popoverViewController.modalPresentationStyle = .popover
-        popoverViewController.preferredContentSize = CGSize(width: 320, height: 216)
-        popoverViewController.popoverPresentationController?.sourceView = sender // source button
-        popoverViewController.popoverPresentationController?.sourceRect = sender.bounds // source button bounds
-        self.present(popoverViewController, animated: true, completion: nil)
-        
-        
-    }
     
-     @objc func showDatePicker2(_ sender: UIButton, animateTime: TimeInterval) {
+     @objc func showDatePicker(_ sender: UIButton, animateTime: TimeInterval) {
         datePicker.isHidden = !datePicker.isHidden
         let isShow = !datePicker.isHidden
         
         UIView.animate(withDuration: 0.5) {
-            self.heighDatePickerConstraint.constant = (isShow ? datePickerVariations.heighOpened.rawValue : datePickerVariations.heighMarginClosed.rawValue)
+            self.heighDatePickerConstraint.constant = (isShow ? showViewVariations.heighOpened.rawValue : showViewVariations.heighMarginClosed.rawValue)
             
-            self.marginTopDatePickerConstraint.constant = (isShow ? datePickerVariations.marginOpen.rawValue : datePickerVariations.heighMarginClosed.rawValue)
+            self.marginTopDatePickerConstraint.constant = (isShow ? showViewVariations.marginOpen.rawValue : showViewVariations.heighMarginClosed.rawValue)
+            
+            self.view.layoutIfNeeded()
+        }
+        
+    }
+    @objc func showRotater(_ sender: UITapGestureRecognizer, animateTime: TimeInterval) {
+        imageRotater.isHidden = !imageRotater.isHidden
+        let isShow = !imageRotater.isHidden
+        imageView = sender.view as! UIImageView // indico cual es la imagen a rotar.
+        UIView.animate(withDuration: 0.5) {
+            self.heightRotaterConstraint.constant = (isShow ? showViewVariations.heighOpened.rawValue : showViewVariations.heighMarginClosed.rawValue)
+            
+            self.marginTopRotaterConstraint.constant = (isShow ? showViewVariations.marginOpen.rawValue : showViewVariations.heighMarginClosed.rawValue)
             
             self.view.layoutIfNeeded()
         }
@@ -590,6 +588,10 @@ extension NoteViewByCodeController : UIImagePickerControllerDelegate {
         let moveViewGesture = UILongPressGestureRecognizer(target: self, action: #selector(userMoveImage))
         newImageView.addGestureRecognizer(moveViewGesture)
         newImageView.accessibilityIdentifier = identifier
+        
+        let doubleTapGesture = UITapGestureRecognizer(target: self, action: #selector(showRotater(_:animateTime:)))
+        doubleTapGesture.numberOfTapsRequired = 1
+        newImageView.addGestureRecognizer(doubleTapGesture)
         
         var leftC = Int16(0)
         var topC =  Int16(0)

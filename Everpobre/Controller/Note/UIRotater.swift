@@ -57,10 +57,10 @@ class UIRotater: UIView {
         constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "V:|-10-[sliderRotater]-10-[sliderZoomer]-10-|", options: [], metrics: nil, views: viewDict))
         
         constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "V:|-10-[rotaterValue]-10-[zoomerValue]-10-|", options: [], metrics: nil, views: viewDict))
-        x
+        
         sliderRotater.addTarget(self, action: #selector(changeRotationValue), for: .valueChanged)
         
-        zoomerValue.addTarget(self, action: #selector(changeZoomValue), for: .valueChanged)
+        sliderZoomer.addTarget(self, action: #selector(changeZoomValue), for: .valueChanged)
         
         addConstraints(constrains)
     }
