@@ -120,17 +120,15 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
             toolBar.items = [barButton1]
             toolBar.sizeToFit()
             
-            //customView.backgroundColor = UIColor.red
             expirationDate.inputAccessoryView = toolBar
-            
-            //expirationDate.addTarget(self, action: #selector(showDatePicker(_:animateTime:)), for: .touchUpInside)
+ 
         }
         
         expirationDate.backgroundColor = .red
         backView.addSubview(expirationDate)
         
         imageRotater.isHidden = true
-        //backView.addSubview(imageRotater)
+        backView.addSubview(imageRotater)
         
         // MARK: Autolayout
         dateLabel.translatesAutoresizingMaskIntoConstraints = false // no use autoresizing
@@ -148,20 +146,19 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
 
         // Horizontals
         var constrains = NSLayoutConstraint.constraints(withVisualFormat: "|-10-[titleTextField]-10-[expirationDate]-10-[dateLabel]-10-|", options: [], metrics: nil, views: viewDict)
-        
-        //constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-10-[datePicker]-10-|", options: [], metrics: nil, views: viewDict))
+    
         
         constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-10-[mapView]-10-|", options: [], metrics: nil, views: viewDict))
         
         constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-10-[notebookPickerView]-10-|", options: [], metrics: nil, views: viewDict))
         
-        //constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-10-[imageRotater]-10-|", options: [], metrics: nil, views: viewDict))
+        constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-10-[imageRotater]-10-|", options: [], metrics: nil, views: viewDict))
         
         constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-10-[noteTextView]-10-|", options: [], metrics: nil, views: viewDict))
         
         // Verticals
         
-        constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "V:[dateLabel]-10-[mapView]-10-[notebookPickerView]-10-[noteTextView]-10-|", options: [], metrics: nil, views: viewDict))
+        constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "V:[dateLabel]-10-[mapView]-10-[notebookPickerView]-10-[imageRotater]-10-[noteTextView]-10-|", options: [], metrics: nil, views: viewDict))
         
         constrains.append(NSLayoutConstraint(item: dateLabel,
                                              attribute: .top,
@@ -204,13 +201,13 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
         
         //marginTopDatePickerConstraint = NSLayoutConstraint(item: datePicker, attribute: .topMargin, relatedBy: .equal, toItem: expirationDate, attribute: .bottomMargin, multiplier: 1, constant: 0.0)
         
-        //heightRotaterConstraint = NSLayoutConstraint(item: imageRotater, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 0)
-        
-        //marginTopRotaterConstraint = NSLayoutConstraint(item: imageRotater, attribute: .topMargin, relatedBy: .equal, toItem: notebookPickerView, attribute: .bottomMargin, multiplier: 1, constant: 0)
+        heightRotaterConstraint = NSLayoutConstraint(item: imageRotater, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 0)
+
+        marginTopRotaterConstraint = NSLayoutConstraint(item: imageRotater, attribute: .topMargin, relatedBy: .equal, toItem: notebookPickerView, attribute: .bottomMargin, multiplier: 1, constant: 0)
         
         backView.addConstraints(constrains)
         //backView.addConstraints([heighDatePickerConstraint, marginTopDatePickerConstraint])
-        //backView.addConstraints([heightRotaterConstraint,marginTopRotaterConstraint])
+        backView.addConstraints([heightRotaterConstraint,marginTopRotaterConstraint])
         
         loadImages()
         

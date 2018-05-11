@@ -17,6 +17,7 @@ class UIRotater: UIView {
     var sliderZoomer = UISlider()
     var rotaterValue = UILabel()
     var zoomerValue = UILabel()
+    var myconstrains : [NSLayoutConstraint]!
     
     weak var delegate : UIRotaterDelegate?
 
@@ -45,24 +46,31 @@ class UIRotater: UIView {
         let viewDict = ["zoomerValue": zoomerValue, "sliderRotater" : sliderRotater, "sliderZoomer" : sliderZoomer, "rotaterValue" : rotaterValue] as [String : Any]
         
         //HORIZONTAL
-        var constrains = NSLayoutConstraint.constraints(withVisualFormat: "|-10-[sliderRotater]-10-[rotaterValue]-10-|", options: [], metrics: nil, views: viewDict)
+        myconstrains = NSLayoutConstraint.constraints(withVisualFormat: "|-10-[sliderRotater]-10-[rotaterValue]-10-|", options: [], metrics: nil, views: viewDict)
         
-        constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-10-[sliderZoomer]-10-[zoomerValue]-10-|", options: [], metrics: nil, views: viewDict))
-        
-        //constrains.append(NSLayoutConstraint(item: rotaterValue, attribute: .lastBaseline, relatedBy: .equal, toItem: sliderRotater, attribute: .lastBaseline, multiplier: 1, constant: 0))
-        
-        //constrains.append(NSLayoutConstraint(item: zoomerValue, attribute: .lastBaseline, relatedBy: .equal, toItem: sliderZoomer, attribute: .lastBaseline, multiplier: 1, constant: 0))
+        myconstrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-10-[sliderZoomer]-10-[zoomerValue]-10-|", options: [], metrics: nil, views: viewDict))
         
         //VERTICAL
-        constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "V:|-10-[sliderRotater]-10-[sliderZoomer]-10-|", options: [], metrics: nil, views: viewDict))
+        myconstrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "V:|-10-[sliderRotater]-10-[sliderZoomer]-10-|", options: [], metrics: nil, views: viewDict))
         
-        constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "V:|-10-[rotaterValue]-10-[zoomerValue]-10-|", options: [], metrics: nil, views: viewDict))
+        myconstrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "V:|-10-[rotaterValue]-10-[zoomerValue]-10-|", options: [], metrics: nil, views: viewDict))
         
         sliderRotater.addTarget(self, action: #selector(changeRotationValue), for: .valueChanged)
         
         sliderZoomer.addTarget(self, action: #selector(changeZoomValue), for: .valueChanged)
         
-        addConstraints(constrains)
+        print(self.constraints.count)
+        setPriorityConstraints()
+        
+        addConstraints(myconstrains)
+        
+    }
+    
+    func setPriorityConstraints() {
+        self.myconstrains.forEach { constraint in
+            print("defaultHigh for constraint")
+            constraint.priority = .defaultHigh
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {
