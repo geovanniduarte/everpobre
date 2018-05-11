@@ -22,7 +22,7 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
     
     let backView = UIView()
     let dateLabel = UILabel()
-    let expirationDate = UIButton() //textField .
+    let expirationDate = UITextField() //textField .
     let titleTextField = UITextField()
     let noteTextView = UITextView()
     let notebookPickerView = UIPickerView()
@@ -75,19 +75,12 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
         if let creationDateDouble = note?.createdAtTi {
             dateLabel.text = Date(timeIntervalSince1970: creationDateDouble).formattedDate(nil)
         }
-        
+        dateLabel.backgroundColor = .green
         backView.addSubview(dateLabel)
         
-        // Configuro label
-        if let expirationDateDouble = note?.expirationDate {
-            expirationDate.setTitle(Date(timeIntervalSince1970: expirationDateDouble).formattedDate("dd/MM/yyyy"), for: .normal)
-            expirationDate.setTitleColor(UIColor.init(red: 0.196, green: 0.3098, blue: 0.52, alpha: 1.0), for: .normal)
-            expirationDate.addTarget(self, action: #selector(showDatePicker(_:animateTime:)), for: .touchUpInside)
-        }
-        
-        backView.addSubview(expirationDate)
         // Configuro textField
         titleTextField.placeholder = "Tittle note"
+        titleTextField.backgroundColor = .blue
         backView.addSubview(titleTextField)
         
         // Configuro noteTextView
@@ -106,11 +99,38 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
         datePicker.datePickerMode = .dateAndTime
         datePicker.minuteInterval = 5
         datePicker.addTarget(self, action: #selector(dateChanged(_:)), for: .valueChanged)
-        datePicker.isHidden = true
-        backView.addSubview(datePicker)
+        //datePicker.isHidden = true
+        //backView.addSubview(datePicker)
+        
+        
+        // Configuro label
+        if let expirationDateDouble = note?.expirationDate {
+            
+            expirationDate.text = Date(timeIntervalSince1970: expirationDateDouble).formattedDate("dd/MM/yyyy")
+            
+            expirationDate.textColor = UIColor.init(red: 0.196, green: 0.3098, blue: 0.52, alpha: 1.0)
+            
+            expirationDate.inputView = datePicker
+            
+            let toolBar = UIToolbar()
+            toolBar.tintColor = UIColor.blue
+            toolBar.barTintColor = UIColor.lightGray
+            
+            let barButton1 = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(hideKeyBoard))
+            toolBar.items = [barButton1]
+            toolBar.sizeToFit()
+            
+            //customView.backgroundColor = UIColor.red
+            expirationDate.inputAccessoryView = toolBar
+            
+            //expirationDate.addTarget(self, action: #selector(showDatePicker(_:animateTime:)), for: .touchUpInside)
+        }
+        
+        expirationDate.backgroundColor = .red
+        backView.addSubview(expirationDate)
         
         imageRotater.isHidden = true
-        backView.addSubview(imageRotater)
+        //backView.addSubview(imageRotater)
         
         // MARK: Autolayout
         dateLabel.translatesAutoresizingMaskIntoConstraints = false // no use autoresizing
@@ -129,19 +149,19 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
         // Horizontals
         var constrains = NSLayoutConstraint.constraints(withVisualFormat: "|-10-[titleTextField]-10-[expirationDate]-10-[dateLabel]-10-|", options: [], metrics: nil, views: viewDict)
         
-        constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-10-[datePicker]-10-|", options: [], metrics: nil, views: viewDict))
+        //constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-10-[datePicker]-10-|", options: [], metrics: nil, views: viewDict))
         
         constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-10-[mapView]-10-|", options: [], metrics: nil, views: viewDict))
         
         constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-10-[notebookPickerView]-10-|", options: [], metrics: nil, views: viewDict))
         
-        constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-10-[imageRotater]-10-|", options: [], metrics: nil, views: viewDict))
+        //constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-10-[imageRotater]-10-|", options: [], metrics: nil, views: viewDict))
         
         constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-10-[noteTextView]-10-|", options: [], metrics: nil, views: viewDict))
         
         // Verticals
         
-        constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "V:[dateLabel]-10-[datePicker]-10-[mapView]-10-[notebookPickerView]-10-[imageRotater]-10-[noteTextView]-10-|", options: [], metrics: nil, views: viewDict))
+        constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "V:[dateLabel]-10-[mapView]-10-[notebookPickerView]-10-[noteTextView]-10-|", options: [], metrics: nil, views: viewDict))
         
         constrains.append(NSLayoutConstraint(item: dateLabel,
                                              attribute: .top,
@@ -180,17 +200,17 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
                                                  multiplier: 1, constant: 0))
         }
        
-        heighDatePickerConstraint = NSLayoutConstraint(item: datePicker, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 0)
+        //heighDatePickerConstraint = NSLayoutConstraint(item: datePicker, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 0)
         
-        marginTopDatePickerConstraint = NSLayoutConstraint(item: datePicker, attribute: .topMargin, relatedBy: .equal, toItem: expirationDate, attribute: .bottomMargin, multiplier: 1, constant: 0.0)
+        //marginTopDatePickerConstraint = NSLayoutConstraint(item: datePicker, attribute: .topMargin, relatedBy: .equal, toItem: expirationDate, attribute: .bottomMargin, multiplier: 1, constant: 0.0)
         
-        heightRotaterConstraint = NSLayoutConstraint(item: imageRotater, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 0)
+        //heightRotaterConstraint = NSLayoutConstraint(item: imageRotater, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 0)
         
-        marginTopRotaterConstraint = NSLayoutConstraint(item: imageRotater, attribute: .topMargin, relatedBy: .equal, toItem: notebookPickerView, attribute: .bottomMargin, multiplier: 1, constant: 0)
+        //marginTopRotaterConstraint = NSLayoutConstraint(item: imageRotater, attribute: .topMargin, relatedBy: .equal, toItem: notebookPickerView, attribute: .bottomMargin, multiplier: 1, constant: 0)
         
         backView.addConstraints(constrains)
-        backView.addConstraints([heighDatePickerConstraint, marginTopDatePickerConstraint])
-        backView.addConstraints([heightRotaterConstraint,marginTopRotaterConstraint])
+        //backView.addConstraints([heighDatePickerConstraint, marginTopDatePickerConstraint])
+        //backView.addConstraints([heightRotaterConstraint,marginTopRotaterConstraint])
         
         loadImages()
         
@@ -414,7 +434,7 @@ extension NoteViewByCodeController {
     }
     
     @objc func dateChanged(_ datePicker: UIDatePicker) {
-        self.expirationDate.setTitle(datePicker.date.formattedDate(nil), for: .normal)
+        self.expirationDate.text = datePicker.date.formattedDate(nil)
         note?.expirationDate = datePicker.date.timeIntervalSince1970
         try! note?.managedObjectContext?.save()
     }
@@ -523,6 +543,11 @@ extension NoteViewByCodeController {
         actionSheetAlert.addAction(cancel)
         
         present(actionSheetAlert, animated: true, completion: nil)
+    }
+    
+    @objc func hideKeyBoard(_ sender : UIView) {
+        print("hidekey")
+        expirationDate.resignFirstResponder()
     }
 }
 
