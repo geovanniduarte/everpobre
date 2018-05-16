@@ -33,6 +33,7 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
     let noteTextView = UITextView()
     let notebookPickerView = UIPickerView()
     var imageView = UIImageView()
+    var imageViewTransform : CGAffineTransform?
     let testButton = UIButton()
     let datePicker = UIDatePicker()
     let mapView = MKMapView()
@@ -439,6 +440,7 @@ extension NoteViewByCodeController {
         imageRotater.isHidden = !imageRotater.isHidden
         let isShow = !imageRotater.isHidden
         imageView = sender.view as! UIImageView // indico cual es la imagen a rotar.
+        imageViewTransform = imageView.transform // indico cual es el transform de la imagen a rotar.
         UIView.animate(withDuration: 0.5) {
             self.heightRotaterConstraint.constant = (isShow ? showRotaterVariations.heighOpened.rawValue : showRotaterVariations.heighMarginClosed.rawValue)
             
@@ -465,8 +467,7 @@ extension NoteViewByCodeController {
                 let constraints = imagesConstraints[imageView]
                 leftImgConstraint = constraints?[0]
                 topImgConstraint = constraints?[1]
-           // }
-            zoomImage(image: imageView, inX: 1.2, inY: 1.2)
+            // }
             
         case .changed:
             
@@ -619,7 +620,7 @@ extension NoteViewByCodeController : UIImagePickerControllerDelegate {
         return fileName
     }
     
-    func addImageView(_ image: UIImage, with identifier: String?, leftConstant: Int16?, topConstant: Int16?, angle: Float?, zoom: Float?) -> [Int16] {
+    func addImageView(_ image: UIImage, with identifier: String?, leftConstant: Int16?, topConstant: Int16?, angle: Float?, scale: Float?) -> [Int16] {
         
         let newImageView = UIImageView(image: image)
         newImageView.translatesAutoresizingMaskIntoConstraints = false
@@ -671,9 +672,8 @@ extension NoteViewByCodeController : UIImagePickerControllerDelegate {
         constraints.append(NSLayoutConstraint(item: newImageView, attribute: .top, relatedBy: .greaterThanOrEqual, toItem: noteTextView, attribute: .top, multiplier: 1, constant: 0))
         
         //rotar la imagen
-        rotateImage(image: newImageView, by: angle!)
-        //escalar imagen
-        zoomImage(image: newImageView, inX: zoom!, inY: zoom!)
+        rotateZoomImage(image: newImageView, angle: angle, scale: scale)
+
         backView.addSubview(newImageView)
         backView.addConstraints(constraints)
         return [Int16(leftC),Int16(topC)]
@@ -683,7 +683,7 @@ extension NoteViewByCodeController : UIImagePickerControllerDelegate {
         if let fileName = addImageFile(image) {
             print("url", fileName)
             if let imgName = fileName.split(separator: "/").last?.description {
-                let constants = addImageView(image, with: imgName, leftConstant: nil, topConstant: nil,  angle: nil, zoom: nil)
+                let constants = addImageView(image, with: imgName, leftConstant: nil, topConstant: nil,  angle: nil, scale: nil)
                 addImageBD(url: imgName, leftConstant: constants[0], topConstant: constants[1])
             }
             
@@ -701,7 +701,7 @@ extension NoteViewByCodeController : UIImagePickerControllerDelegate {
         self.note?.images?.forEach { image in
             let img = image as! Image
             if let picture =  getSavedImage(named: img.localUrl!) {
-                self.addImageView(picture, with: img.localUrl!, leftConstant: img.leftConstant, topConstant: img.topConstant, angle: img.rotation, zoom: img.zoom)
+                self.addImageView(picture, with: img.localUrl!, leftConstant: img.leftConstant, topConstant: img.topConstant, angle: img.rotation, scale: img.zoom)
             }
         }
     }
@@ -722,33 +722,38 @@ extension NoteViewByCodeController : UIImagePickerControllerDelegate {
 
 extension NoteViewByCodeController : UIRotaterDelegate {
     
-    func rotateImage(image: UIImageView, by: Float) {
-        
+    func rotater(_ sender: UIRotater, didChangeRotation angle: Float, scale: Float) {
+        rotateZoomImage(image: self.imageView, angle: angle, scale: scale)
+    }
+    
+    func rotater(_ sender: UIRotater, didEndRotation angle: Float, scale: Float) {
+        editImage(with: imageView.accessibilityIdentifier!, kvcOptions: ["rotation":angle, "zoom":scale])
+    }
+    
+    
+    func rotateZoomImage(image: UIImageView, angle: Float?, scale: Float?) {
         UIView.animate(withDuration: 1.0, animations: {
-            image.transform = CGAffineTransform(rotationAngle: CGFloat((by * .pi) / 180.0))
+            var transform : CGAffineTransform?
+            if let ang = angle {
+                if ang > 0 {
+                    transform = CGAffineTransform(rotationAngle: CGFloat((ang * .pi) / 180.0))
+                }
+            }
+            
+            if let sca = scale {
+                if sca > 0 {
+                    if let tra = transform {
+                        transform = tra.concatenating(CGAffineTransform(scaleX: CGFloat(sca), y: CGFloat(sca)))
+                    } else {
+                        transform   = CGAffineTransform(scaleX: CGFloat(sca), y: CGFloat(sca))
+                    }
+                }
+            }
+            
+            if let tra = transform {
+                image.transform = tra
+            }
         })
-    }
-    
-    func zoomImage(image: UIImageView, inX: Float, inY: Float) {
-        UIView.animate(withDuration: 0.1, animations: {
-            image.transform = CGAffineTransform(scaleX: CGFloat(inX), y: CGFloat(inY))
-        })
-    }
-    
-    func rotater(_ sender: UISlider, didChangeRotation angle: Float) {
-        rotateImage(image: self.imageView, by: angle)
-    }
-    
-    func rotater(_ sender: UISlider, didEndRotation angle: Float) {
-        editImage(with: imageView.accessibilityIdentifier!, kvcOptions: ["rotation":angle])
-    }
-    
-    func rotater(_ sender: UISlider, didChangeZoom increment: Float) {
-        zoomImage(image: self.imageView, inX: increment, inY: increment)
-    }
-    
-    func rotater(_ sender: UISlider, didEndZoom increment: Float) {
-        editImage(with: imageView.accessibilityIdentifier!, kvcOptions: ["zoom":increment])
     }
     
 }

@@ -8,11 +8,10 @@
 
 import UIKit
 protocol UIRotaterDelegate: NSObjectProtocol {
-    func rotater(_ sender: UISlider, didChangeRotation angle: Float)
-    func rotater(_ sender: UISlider, didChangeZoom increment: Float)
-    func rotater(_ sender: UISlider, didEndRotation angle: Float)
-    func rotater(_ sender: UISlider, didEndZoom increment: Float)
+    func rotater(_ sender: UIRotater, didChangeRotation angle: Float, scale: Float)
+    func rotater(_ sender: UIRotater, didEndRotation angle: Float, scale: Float)
 }
+
 class UIRotater: UIView {
     
     var sliderRotater = UISlider()
@@ -83,21 +82,20 @@ class UIRotater: UIView {
     }
     
     @objc func changeRotationValue(sender : UISlider) {
-        print("state \(sender.state)")
         rotaterValue.text = "\(sender.value)"
-        delegate?.rotater(sender, didChangeRotation: sender.value)
+        delegate?.rotater(self, didChangeRotation: sliderRotater.value, scale: sliderZoomer.value)
     }
     
     @objc func changeZoomValue(sender : UISlider) {
         zoomerValue.text = "\(sender.value)"
-        delegate?.rotater(sender, didChangeZoom: sender.value)
+        delegate?.rotater(self, didChangeRotation: sliderRotater.value, scale: sliderZoomer.value)
     }
     
     @objc func finishRotation(sender : UISlider) {
-        delegate?.rotater(sender, didEndRotation: sender.value)
+        delegate?.rotater(self, didEndRotation: sliderRotater.value, scale: sliderZoomer.value)
     }
     
     @objc func finishZoom(sender : UISlider) {
-        delegate?.rotater(sender, didEndZoom: sender.value)
+        delegate?.rotater(self, didEndRotation: sliderRotater.value, scale: sliderZoomer.value)
     }
 }
