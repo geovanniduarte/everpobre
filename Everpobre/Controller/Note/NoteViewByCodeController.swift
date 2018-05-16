@@ -10,8 +10,14 @@ import UIKit
 import CoreData
 import MapKit
 
-enum showViewVariations : CGFloat {
+enum showDatePickerVariations : CGFloat {
     case heighOpened = 214
+    case heighMarginClosed = 0
+    case marginOpen = 0.5
+}
+
+enum showRotaterVariations : CGFloat {
+    case heighOpened = 100
     case heighMarginClosed = 0
     case marginOpen = 0.5
 }
@@ -75,17 +81,14 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
         if let creationDateDouble = note?.createdAtTi {
             dateLabel.text = Date(timeIntervalSince1970: creationDateDouble).formattedDate(nil)
         }
-        dateLabel.backgroundColor = .green
         backView.addSubview(dateLabel)
         
         // Configuro textField
         titleTextField.placeholder = "Tittle note"
-        titleTextField.backgroundColor = .blue
         backView.addSubview(titleTextField)
         
         // Configuro noteTextView
         noteTextView.text = "Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda."
-        noteTextView.backgroundColor = UIColor.blue
         backView.addSubview(noteTextView)
         
         //configuro notebook picker
@@ -124,10 +127,10 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
  
         }
         
-        expirationDate.backgroundColor = .red
         backView.addSubview(expirationDate)
         
         imageRotater.isHidden = true
+        imageRotater.delegate = self
         backView.addSubview(imageRotater)
         
         // MARK: Autolayout
@@ -158,7 +161,7 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
         
         // Verticals
         
-        constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "V:[dateLabel]-10-[mapView]-10-[notebookPickerView]-10-[imageRotater]-10-[noteTextView]-10-|", options: [], metrics: nil, views: viewDict))
+        constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "V:[dateLabel]-10-[mapView]-10-[notebookPickerView]-0-[imageRotater]-10-[noteTextView]-10-|", options: [], metrics: nil, views: viewDict))
         
         constrains.append(NSLayoutConstraint(item: dateLabel,
                                              attribute: .top,
@@ -203,7 +206,8 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
         
         heightRotaterConstraint = NSLayoutConstraint(item: imageRotater, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 0)
 
-        marginTopRotaterConstraint = NSLayoutConstraint(item: imageRotater, attribute: .topMargin, relatedBy: .equal, toItem: notebookPickerView, attribute: .bottomMargin, multiplier: 1, constant: 0)
+        marginTopRotaterConstraint = NSLayoutConstraint(item: imageRotater, attribute: .topMargin, relatedBy: .equal, toItem: notebookPickerView, attribute: .bottomMargin, multiplier: 1, constant: 10)
+        marginTopRotaterConstraint.priority = .defaultHigh
         
         backView.addConstraints(constrains)
         //backView.addConstraints([heighDatePickerConstraint, marginTopDatePickerConstraint])
@@ -398,6 +402,21 @@ extension NoteViewByCodeController {
             }
         }
     }
+    
+    
+    func editImage(with url: String, kvcOptions: [String:Any]) {
+        let privateMOC = DataManager.sharedManager.persistentContainer.newBackgroundContext()
+        
+        privateMOC.perform {
+            if var image = self.findImage(by: url) {
+                image = privateMOC.object(with: image.objectID) as! Image
+                image.setValuesForKeys(kvcOptions)
+                try! privateMOC.save()
+            }
+        }
+    }
+    
+    
 }
 
 // MARK: - Actions
@@ -408,9 +427,9 @@ extension NoteViewByCodeController {
         let isShow = !datePicker.isHidden
         
         UIView.animate(withDuration: 0.5) {
-            self.heighDatePickerConstraint.constant = (isShow ? showViewVariations.heighOpened.rawValue : showViewVariations.heighMarginClosed.rawValue)
+            self.heighDatePickerConstraint.constant = (isShow ? showDatePickerVariations.heighOpened.rawValue : showDatePickerVariations.heighMarginClosed.rawValue)
             
-            self.marginTopDatePickerConstraint.constant = (isShow ? showViewVariations.marginOpen.rawValue : showViewVariations.heighMarginClosed.rawValue)
+            self.marginTopDatePickerConstraint.constant = (isShow ? showDatePickerVariations.marginOpen.rawValue : showDatePickerVariations.heighMarginClosed.rawValue)
             
             self.view.layoutIfNeeded()
         }
@@ -421,9 +440,9 @@ extension NoteViewByCodeController {
         let isShow = !imageRotater.isHidden
         imageView = sender.view as! UIImageView // indico cual es la imagen a rotar.
         UIView.animate(withDuration: 0.5) {
-            self.heightRotaterConstraint.constant = (isShow ? showViewVariations.heighOpened.rawValue : showViewVariations.heighMarginClosed.rawValue)
+            self.heightRotaterConstraint.constant = (isShow ? showRotaterVariations.heighOpened.rawValue : showRotaterVariations.heighMarginClosed.rawValue)
             
-            self.marginTopRotaterConstraint.constant = (isShow ? showViewVariations.marginOpen.rawValue : showViewVariations.heighMarginClosed.rawValue)
+            self.marginTopRotaterConstraint.constant = (isShow ? showRotaterVariations.marginOpen.rawValue : showRotaterVariations.heighMarginClosed.rawValue)
             
             self.view.layoutIfNeeded()
         }
@@ -447,10 +466,8 @@ extension NoteViewByCodeController {
                 leftImgConstraint = constraints?[0]
                 topImgConstraint = constraints?[1]
            // }
+            zoomImage(image: imageView, inX: 1.2, inY: 1.2)
             
-            UIView.animate(withDuration: 0.1, animations: {
-                self.imageView.transform = CGAffineTransform(scaleX: 1.2, y: 1.2);
-            })
         case .changed:
             
             let location = longPressGesture.location(in: noteTextView)
@@ -602,7 +619,8 @@ extension NoteViewByCodeController : UIImagePickerControllerDelegate {
         return fileName
     }
     
-    func addImageView(_ image: UIImage, with identifier: String?, leftConstant: Int16?, topConstant: Int16?) -> [Int16] {
+    func addImageView(_ image: UIImage, with identifier: String?, leftConstant: Int16?, topConstant: Int16?, angle: Float?, zoom: Float?) -> [Int16] {
+        
         let newImageView = UIImageView(image: image)
         newImageView.translatesAutoresizingMaskIntoConstraints = false
        
@@ -632,9 +650,8 @@ extension NoteViewByCodeController : UIImagePickerControllerDelegate {
         let topConstraint = NSLayoutConstraint(item: newImageView, attribute: .top, relatedBy: .equal, toItem: noteTextView, attribute: .top, multiplier: 1, constant: CGFloat(topC))
         topConstraint.priority = .defaultHigh
         
-        //if let id = identifier {
-             imagesConstraints[newImageView] = [leftConstraint, topConstraint]
-        //}
+        // Anade los constraints al mapa global.
+        imagesConstraints[newImageView] = [leftConstraint, topConstraint]
         
         var constraints = [leftConstraint, topConstraint]
         
@@ -653,6 +670,10 @@ extension NoteViewByCodeController : UIImagePickerControllerDelegate {
         
         constraints.append(NSLayoutConstraint(item: newImageView, attribute: .top, relatedBy: .greaterThanOrEqual, toItem: noteTextView, attribute: .top, multiplier: 1, constant: 0))
         
+        //rotar la imagen
+        rotateImage(image: newImageView, by: angle!)
+        //escalar imagen
+        zoomImage(image: newImageView, inX: zoom!, inY: zoom!)
         backView.addSubview(newImageView)
         backView.addConstraints(constraints)
         return [Int16(leftC),Int16(topC)]
@@ -662,7 +683,7 @@ extension NoteViewByCodeController : UIImagePickerControllerDelegate {
         if let fileName = addImageFile(image) {
             print("url", fileName)
             if let imgName = fileName.split(separator: "/").last?.description {
-                let constants = addImageView(image, with: imgName, leftConstant: nil, topConstant: nil)
+                let constants = addImageView(image, with: imgName, leftConstant: nil, topConstant: nil,  angle: nil, zoom: nil)
                 addImageBD(url: imgName, leftConstant: constants[0], topConstant: constants[1])
             }
             
@@ -680,7 +701,7 @@ extension NoteViewByCodeController : UIImagePickerControllerDelegate {
         self.note?.images?.forEach { image in
             let img = image as! Image
             if let picture =  getSavedImage(named: img.localUrl!) {
-                self.addImageView(picture, with: img.localUrl!, leftConstant: img.leftConstant, topConstant: img.topConstant)
+                self.addImageView(picture, with: img.localUrl!, leftConstant: img.leftConstant, topConstant: img.topConstant, angle: img.rotation, zoom: img.zoom)
             }
         }
     }
@@ -695,6 +716,39 @@ extension NoteViewByCodeController : UIImagePickerControllerDelegate {
             exclusionPaths.append(path)
         }
         return exclusionPaths
+    }
+    
+}
+
+extension NoteViewByCodeController : UIRotaterDelegate {
+    
+    func rotateImage(image: UIImageView, by: Float) {
+        
+        UIView.animate(withDuration: 1.0, animations: {
+            image.transform = CGAffineTransform(rotationAngle: CGFloat((by * .pi) / 180.0))
+        })
+    }
+    
+    func zoomImage(image: UIImageView, inX: Float, inY: Float) {
+        UIView.animate(withDuration: 0.1, animations: {
+            image.transform = CGAffineTransform(scaleX: CGFloat(inX), y: CGFloat(inY))
+        })
+    }
+    
+    func rotater(_ sender: UISlider, didChangeRotation angle: Float) {
+        rotateImage(image: self.imageView, by: angle)
+    }
+    
+    func rotater(_ sender: UISlider, didEndRotation angle: Float) {
+        editImage(with: imageView.accessibilityIdentifier!, kvcOptions: ["rotation":angle])
+    }
+    
+    func rotater(_ sender: UISlider, didChangeZoom increment: Float) {
+        zoomImage(image: self.imageView, inX: increment, inY: increment)
+    }
+    
+    func rotater(_ sender: UISlider, didEndZoom increment: Float) {
+        editImage(with: imageView.accessibilityIdentifier!, kvcOptions: ["zoom":increment])
     }
     
 }

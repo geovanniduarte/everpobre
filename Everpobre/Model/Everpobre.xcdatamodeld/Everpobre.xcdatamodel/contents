@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="13772" systemVersion="17D47" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="13772" systemVersion="" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Image" representedClassName="Image" syncable="YES" codeGenerationType="class">
         <attribute name="leftConstant" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="localUrl" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="rotation" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="topConstant" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="zoom" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
         <relationship name="note" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Note" inverseName="images" inverseEntity="Note" syncable="YES"/>
     </entity>
     <entity name="Note" representedClassName="Note" syncable="YES" codeGenerationType="class">
@@ -22,7 +24,7 @@
         <relationship name="notes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Note" inverseName="notebook" inverseEntity="Note" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Image" positionX="-704" positionY="-1368" width="128" height="103"/>
+        <element name="Image" positionX="-704" positionY="-1368" width="128" height="135"/>
         <element name="Note" positionX="-884" positionY="-1395" width="128" height="148"/>
         <element name="Notebook" positionX="-1089" positionY="-1413" width="128" height="105"/>
     </elements>

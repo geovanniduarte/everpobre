@@ -8,8 +8,10 @@
 
 import UIKit
 protocol UIRotaterDelegate: NSObjectProtocol {
-    func rotater(_ sender: UIRotater, didChangeRotation: Float)
-    func rotater(_ sender: UIRotater, didChangeZoom: Float)
+    func rotater(_ sender: UISlider, didChangeRotation angle: Float)
+    func rotater(_ sender: UISlider, didChangeZoom increment: Float)
+    func rotater(_ sender: UISlider, didEndRotation angle: Float)
+    func rotater(_ sender: UISlider, didEndZoom increment: Float)
 }
 class UIRotater: UIView {
     
@@ -23,7 +25,6 @@ class UIRotater: UIView {
 
     init() {
         super.init(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
-        self.backgroundColor = .red
         
         sliderRotater.maximumValue = 270
         addSubview(sliderRotater)
@@ -59,6 +60,10 @@ class UIRotater: UIView {
         
         sliderZoomer.addTarget(self, action: #selector(changeZoomValue), for: .valueChanged)
         
+        sliderRotater.addTarget(self, action: #selector(finishRotation(sender:)), for: .touchUpInside)
+        
+        sliderZoomer.addTarget(self, action: #selector(finishZoom), for: .touchUpInside)
+        
         print(self.constraints.count)
         setPriorityConstraints()
         
@@ -78,13 +83,21 @@ class UIRotater: UIView {
     }
     
     @objc func changeRotationValue(sender : UISlider) {
+        print("state \(sender.state)")
         rotaterValue.text = "\(sender.value)"
-        delegate?.rotater(self, didChangeRotation: sender.value)
+        delegate?.rotater(sender, didChangeRotation: sender.value)
     }
     
     @objc func changeZoomValue(sender : UISlider) {
         zoomerValue.text = "\(sender.value)"
-        delegate?.rotater(self, didChangeZoom: sender.value)
+        delegate?.rotater(sender, didChangeZoom: sender.value)
     }
     
+    @objc func finishRotation(sender : UISlider) {
+        delegate?.rotater(sender, didEndRotation: sender.value)
+    }
+    
+    @objc func finishZoom(sender : UISlider) {
+        delegate?.rotater(sender, didEndZoom: sender.value)
+    }
 }
