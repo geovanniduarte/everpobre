@@ -437,6 +437,20 @@ extension NoteViewByCodeController {
         
     }
     @objc func showRotater(_ sender: UITapGestureRecognizer, animateTime: TimeInterval) {
+        
+        let imageV = sender.view as! UIImageView
+        
+        if !imageRotater.isHidden {
+            let image =  findImage(by: imageV.accessibilityIdentifier!)
+            //imageRotater.setValueForRotater(image?.rotation, scale: image?.zoom)
+            imageRotater.setValuess()
+        }
+        
+        if !imageRotater.isHidden && sender.view != imageView {
+            imageView = imageV// indico cual es la imagen a rotar.
+            return
+        }
+        
         imageRotater.isHidden = !imageRotater.isHidden
         let isShow = !imageRotater.isHidden
         imageView = sender.view as! UIImageView // indico cual es la imagen a rotar.

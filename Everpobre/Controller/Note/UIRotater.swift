@@ -98,4 +98,20 @@ class UIRotater: UIView {
     @objc func finishZoom(sender : UISlider) {
         delegate?.rotater(self, didEndRotation: sliderRotater.value, scale: sliderZoomer.value)
     }
+    
+    func setValueForRotater(_ angle: Float?, scale: Float?) {
+       
+        if let ang = angle {
+             sliderRotater.value = ang
+        }
+        
+        if let sca = scale {
+            sliderZoomer.value = sca
+        }
+    }
+    
+    func setValuess() {
+        sliderZoomer.value = 180
+        sliderRotater.value = 1
+    }
 }
