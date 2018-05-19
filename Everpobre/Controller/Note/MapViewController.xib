@@ -31,30 +31,16 @@
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <textInputTraits key="textInputTraits"/>
                 </textField>
-                <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="aJO-Xc-mxl">
-                    <rect key="frame" x="8" y="525" width="307" height="31"/>
-                </slider>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="k8P-pk-vvG">
-                    <rect key="frame" x="323" y="538.5" width="42" height="21"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                    <nil key="textColor"/>
-                    <nil key="highlightedColor"/>
-                </label>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="aJO-Xc-mxl" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="505" id="5eF-fa-gVm"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="k8P-pk-vvG" secondAttribute="trailing" constant="10" id="L5o-9h-hAk"/>
                 <constraint firstItem="Sx5-3q-b0a" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="20" id="MJF-Pa-j71"/>
                 <constraint firstItem="gAd-SQ-xzj" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="PNK-Uq-l6h"/>
                 <constraint firstItem="gAd-SQ-xzj" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="Pvq-W4-KtN"/>
-                <constraint firstItem="k8P-pk-vvG" firstAttribute="leading" secondItem="aJO-Xc-mxl" secondAttribute="trailing" constant="10" id="T0V-1I-ZBa"/>
                 <constraint firstItem="gAd-SQ-xzj" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="URk-SD-wnt"/>
-                <constraint firstItem="k8P-pk-vvG" firstAttribute="baseline" secondItem="aJO-Xc-mxl" secondAttribute="baseline" id="cwI-qS-flG"/>
                 <constraint firstItem="Sx5-3q-b0a" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="20" id="ggG-IL-bJm"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="Sx5-3q-b0a" secondAttribute="trailing" constant="20" id="h5q-Hk-8u7"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="gAd-SQ-xzj" secondAttribute="bottom" id="ihv-1J-dqp"/>
-                <constraint firstItem="aJO-Xc-mxl" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="10" id="ivx-9B-9Aq"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <point key="canvasLocation" x="35.5" y="53.5"/>

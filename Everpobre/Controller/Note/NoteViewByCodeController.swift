@@ -51,20 +51,28 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
     var heightRotaterConstraint : NSLayoutConstraint!
     var marginTopRotaterConstraint : NSLayoutConstraint!
     
+    var mapViewConstraint : NSLayoutConstraint!
+    
     var imagesConstraints : ImageContraintsPairs!
     
     var relativePoint: CGPoint!
     
-    var note: Note?
+    var note: Note? {
+        didSet {
+            syncModel()
+        }
+    }
     var notebooks : [Notebook]?
     
     init(note: Note) {
         // Limpiamos
         self.note = note
+        imagesConstraints = [:]
         super.init(nibName: nil, bundle: nil)
     }
     
     init() {
+        imagesConstraints = [:]
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -74,8 +82,6 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
     
     
     override func loadView() {
-        
-        imagesConstraints = [:]
         
         backView.backgroundColor = .white
     
@@ -177,22 +183,18 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
                                              toItem: dateLabel,
                                              attribute: .lastBaseline,
                                              multiplier: 1, constant: 0))
-        if note?.location != nil {
-            constrains.append(NSLayoutConstraint(item: mapView,
-                                                 attribute: .height,
-                                                 relatedBy: .equal,
-                                                 toItem: notebookPickerView,
-                                                 attribute: .height,
-                                                 multiplier: 1, constant: 0))
- 
-        } else {
-            constrains.append(NSLayoutConstraint(item: mapView,
-                                                 attribute: .height,
-                                                 relatedBy: .equal,
-                                                 toItem: nil,
-                                                 attribute: .notAnAttribute,
-                                                 multiplier: 1, constant: 0))
+        
+        mapViewConstraint = NSLayoutConstraint(item: mapView,
+                                               attribute: .height,
+                                               relatedBy: .equal,
+                                               toItem: nil,
+                                               attribute: .notAnAttribute,
+                                               multiplier: 1, constant: 0)
+        if (note?.location != nil) {
+            mapViewConstraint.constant = 100
         }
+        constrains.append(mapViewConstraint)
+        
        
         //heighDatePickerConstraint = NSLayoutConstraint(item: datePicker, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 0)
         
@@ -258,7 +260,6 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        syncModel();
         
     }
     
@@ -284,10 +285,21 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
     {
         editNote(values: ["title":titleTextField.text as Any])
         self.note = note
+        cleanVC()
         syncModel()
     }
     
+    func cleanVC() {
+        titleTextField.text = ""
+        expirationDate.text = ""
+        dateLabel.text = ""
+        imagesConstraints.keys.forEach { imageView in
+            imageView.removeFromSuperview()
+        }
+    }
+    
     func syncModel() {
+        print(note?.title)
         titleTextField.text = note?.title
         
         if let expirationDateDouble = note?.expirationDate {
@@ -299,6 +311,7 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
             dateLabel.text = Date(timeIntervalSince1970: creationDateDouble).formattedDate(nil)
         }
         
+        loadImages()
     }
 
 }
@@ -597,7 +610,7 @@ extension NoteViewByCodeController : MapViewControllerDelegate, MKMapViewDelegat
         note?.location = location
         do {
            try note?.managedObjectContext?.save()
-           
+           mapViewConstraint.constant = 100
         } catch {
             print(error)
         }
