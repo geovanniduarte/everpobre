@@ -20,6 +20,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow()
         
         let noteVC = NoteViewByCodeController()
+        
+        
         let noteTVC = NoteTableViewController(style: .plain)
        
         if UIDevice.current.userInterfaceIdiom == .pad {
@@ -28,10 +30,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             noteTVC.delegate = noteTVC
         }
         
-        let navigationController = UINavigationController(rootViewController: noteTVC);
+        let navigationControllerMaster = UINavigationController(rootViewController: noteTVC);
+        let navigationControllerDetail = UINavigationController(rootViewController: noteVC);
         
-        let splitViewController = UISplitViewController();
-        splitViewController.viewControllers = [navigationController, noteVC]
+        let splitViewController = UISplitViewControllerFirstMaster();
+        splitViewController.delegate = splitViewController
+        splitViewController.viewControllers = [navigationControllerMaster, navigationControllerDetail]
+        
         splitViewController.preferredDisplayMode = .primaryOverlay
         
         

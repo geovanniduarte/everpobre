@@ -19,6 +19,7 @@ class NoteTableViewController: UITableViewController, NSFetchedResultsController
     var fetchedResultController2 : NSFetchedResultsController<Notebook>!
     
     weak var delegate: NotesViewControllerDelegate?
+    
     var defaultNotebook : Notebook?
 
     override func viewDidLoad() {
@@ -27,6 +28,13 @@ class NoteTableViewController: UITableViewController, NSFetchedResultsController
         let addNotebook = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(addNewNotebookModal))
         navigationItem.rightBarButtonItems = [addNote, addNotebook]
         loadData2()
+        
+        if  delegate is NoteViewByCodeController {
+            let mynote = fetchedResultController2.fetchedObjects?.first?.notes?.allObjects[0] as? Note
+
+            (delegate as! NoteViewByCodeController).note = mynote
+            return
+        }
     }
   
     

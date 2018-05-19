@@ -19,6 +19,7 @@
 		BC70A1F02051CFA200990E75 /* NoteViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = BC70A1EE2051CFA200990E75 /* NoteViewController.xib */; };
 		BC70A1F22051F17100990E75 /* NoteViewByCodeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC70A1F12051F17100990E75 /* NoteViewByCodeController.swift */; };
 		BC934D2F209279E2003C6FBB /* Foundation+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC934D2E209279E2003C6FBB /* Foundation+Additions.swift */; };
+		BCBE58D020AF705B0016D611 /* UISplitViewControllerFirstMaster.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBE58CF20AF705B0016D611 /* UISplitViewControllerFirstMaster.swift */; };
 		BCC80620207FF4DF00A1B230 /* Everpobre.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = BCC8061E207FF4DF00A1B230 /* Everpobre.xcdatamodeld */; };
 		BCC806222080016200A1B230 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC806212080016200A1B230 /* DataManager.swift */; };
 		BCC806242080131000A1B230 /* NoteTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC806232080131000A1B230 /* NoteTableViewController.swift */; };
@@ -41,6 +42,7 @@
 		BC70A1EE2051CFA200990E75 /* NoteViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NoteViewController.xib; sourceTree = "<group>"; };
 		BC70A1F12051F17100990E75 /* NoteViewByCodeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteViewByCodeController.swift; sourceTree = "<group>"; };
 		BC934D2E209279E2003C6FBB /* Foundation+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Foundation+Additions.swift"; sourceTree = "<group>"; };
+		BCBE58CF20AF705B0016D611 /* UISplitViewControllerFirstMaster.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UISplitViewControllerFirstMaster.swift; sourceTree = "<group>"; };
 		BCC8061F207FF4DF00A1B230 /* Everpobre.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Everpobre.xcdatamodel; sourceTree = "<group>"; };
 		BCC806212080016200A1B230 /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		BCC806232080131000A1B230 /* NoteTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteTableViewController.swift; sourceTree = "<group>"; };
@@ -62,6 +64,7 @@
 		BC227D442089744400BB268E /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				BCBE58CF20AF705B0016D611 /* UISplitViewControllerFirstMaster.swift */,
 				BC227D462089749000BB268E /* Notebook */,
 				BC227D452089748000BB268E /* Note */,
 			);
@@ -224,6 +227,7 @@
 			files = (
 				BCD61FA52093C029000E1472 /* MapViewController.swift in Sources */,
 				BC934D2F209279E2003C6FBB /* Foundation+Additions.swift in Sources */,
+				BCBE58D020AF705B0016D611 /* UISplitViewControllerFirstMaster.swift in Sources */,
 				BC2B68372086AD89006E406E /* ManagedObject.swift in Sources */,
 				BC58D9FC208A3A3400A2DF42 /* NotebookTableTableViewController.swift in Sources */,
 				BCC80620207FF4DF00A1B230 /* Everpobre.xcdatamodeld in Sources */,

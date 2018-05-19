@@ -72,6 +72,7 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
         fatalError("init(coder:) has not been implemented")
     }
     
+    
     override func loadView() {
         
         imagesConstraints = [:]
@@ -85,7 +86,6 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
         backView.addSubview(dateLabel)
         
         // Configuro textField
-        titleTextField.placeholder = "Tittle note"
         backView.addSubview(titleTextField)
         
         // Configuro noteTextView
@@ -100,36 +100,29 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
         mapView.delegate = self
         backView.addSubview(mapView)
 
+        // Configuracion del datePicker
         datePicker.datePickerMode = .dateAndTime
         datePicker.minuteInterval = 5
         datePicker.addTarget(self, action: #selector(dateChanged(_:)), for: .valueChanged)
-        //datePicker.isHidden = true
-        //backView.addSubview(datePicker)
+    
+        // Configuracion del expirationDate
+        expirationDate.textColor = UIColor.init(red: 0.196, green: 0.3098, blue: 0.52, alpha: 1.0)
+        expirationDate.inputView = datePicker
         
+        let toolBar = UIToolbar()
+        toolBar.tintColor = UIColor.blue
+        toolBar.barTintColor = UIColor.lightGray
+        
+        let barButton1 = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(hideKeyBoard))
+        toolBar.items = [barButton1]
+        toolBar.sizeToFit()
+        
+        expirationDate.inputAccessoryView = toolBar
         
         // Configuro label
-        if let expirationDateDouble = note?.expirationDate {
-            
-            expirationDate.text = Date(timeIntervalSince1970: expirationDateDouble).formattedDate("dd/MM/yyyy")
-            
-            expirationDate.textColor = UIColor.init(red: 0.196, green: 0.3098, blue: 0.52, alpha: 1.0)
-            
-            expirationDate.inputView = datePicker
-            
-            let toolBar = UIToolbar()
-            toolBar.tintColor = UIColor.blue
-            toolBar.barTintColor = UIColor.lightGray
-            
-            let barButton1 = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(hideKeyBoard))
-            toolBar.items = [barButton1]
-            toolBar.sizeToFit()
-            
-            expirationDate.inputAccessoryView = toolBar
- 
-        }
-        
         backView.addSubview(expirationDate)
         
+        // Configuracion del imageRotater
         imageRotater.isHidden = true
         imageRotater.delegate = self
         backView.addSubview(imageRotater)
@@ -283,18 +276,29 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
-        note?.title = textField.text
-        try! note?.managedObjectContext?.save()
+        editNote(values: ["title":textField.text as Any])
     }
+    
     
     func noteTableViewController(_ viewController: NoteTableViewController, didSelectNote note: Note)
     {
+        editNote(values: ["title":titleTextField.text as Any])
         self.note = note
         syncModel()
     }
     
     func syncModel() {
         titleTextField.text = note?.title
+        
+        if let expirationDateDouble = note?.expirationDate {
+            expirationDate.text = Date(timeIntervalSince1970: expirationDateDouble).formattedDate(nil)
+            expirationDate.inputView = datePicker
+        }
+        
+        if let creationDateDouble = note?.createdAtTi {
+            dateLabel.text = Date(timeIntervalSince1970: creationDateDouble).formattedDate(nil)
+        }
+        
     }
 
 }
@@ -368,6 +372,11 @@ extension NoteViewByCodeController {
         } catch {
             print(error)
         }
+    }
+    
+    func editNote(values: [String:Any]) {
+        self.note?.setValuesForKeys(values)
+        try! note?.managedObjectContext?.save()
     }
     
     func addImageBD(url: String, leftConstant: Int16, topConstant: Int16) {
@@ -571,6 +580,11 @@ extension NoteViewByCodeController {
         actionSheetAlert.addAction(useLibrary)
         actionSheetAlert.addAction(cancel)
         
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            actionSheetAlert.popoverPresentationController?.sourceView = self.view
+            actionSheetAlert.popoverPresentationController?.sourceRect = CGRect(x: self.view.bounds.midX, y: self.view.bounds.midY, width: 0, height: 0)
+            actionSheetAlert.popoverPresentationController?.permittedArrowDirections = []
+        }
         present(actionSheetAlert, animated: true, completion: nil)
     }
     
