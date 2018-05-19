@@ -448,12 +448,9 @@ extension NoteViewByCodeController {
     @objc func showRotater(_ sender: UITapGestureRecognizer, animateTime: TimeInterval) {
         
         let imageV = sender.view as! UIImageView
-        
-        if !imageRotater.isHidden {
-            let image =  findImage(by: imageV.accessibilityIdentifier!)
-            //imageRotater.setValueForRotater(image?.rotation, scale: image?.zoom)
-            imageRotater.setValuess()
-        }
+        //imageRotater.setValuess()
+        let image =  findImage(by: imageV.accessibilityIdentifier!)
+        imageRotater.setValueForRotater(image?.rotation, scale: image?.zoom)
         
         if !imageRotater.isHidden && sender.view != imageView {
             imageView = imageV// indico cual es la imagen a rotar.
@@ -755,6 +752,7 @@ extension NoteViewByCodeController : UIRotaterDelegate {
     }
     
     func rotater(_ sender: UIRotater, didEndRotation angle: Float, scale: Float) {
+        
         editImage(with: imageView.accessibilityIdentifier!, kvcOptions: ["rotation":angle, "zoom":scale])
     }
     

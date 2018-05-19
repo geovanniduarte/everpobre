@@ -103,15 +103,17 @@ class UIRotater: UIView {
        
         if let ang = angle {
              sliderRotater.value = ang
+             rotaterValue.text = "\(ang)"
         }
         
         if let sca = scale {
             sliderZoomer.value = sca
+            zoomerValue.text = "\(sca)"
         }
     }
     
     func setValuess() {
-        sliderZoomer.value = 180
-        sliderRotater.value = 1
+        sliderZoomer.value = 1
+        sliderRotater.value = 180
     }
 }
