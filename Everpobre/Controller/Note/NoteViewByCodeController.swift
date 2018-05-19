@@ -293,6 +293,7 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
         titleTextField.text = ""
         expirationDate.text = ""
         dateLabel.text = ""
+        mapViewConstraint?.constant = 0
         imagesConstraints.keys.forEach { imageView in
             imageView.removeFromSuperview()
         }
@@ -311,6 +312,10 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
             dateLabel.text = Date(timeIntervalSince1970: creationDateDouble).formattedDate(nil)
         }
         
+        if let location = note?.location {
+            mapViewConstraint?.constant = 100
+        }
+
         loadImages()
     }
 
@@ -610,7 +615,9 @@ extension NoteViewByCodeController : MapViewControllerDelegate, MKMapViewDelegat
         note?.location = location
         do {
            try note?.managedObjectContext?.save()
-           mapViewConstraint.constant = 100
+            DispatchQueue.main.async {
+                self.mapViewConstraint.constant = 100
+            }
         } catch {
             print(error)
         }
