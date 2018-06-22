@@ -17,7 +17,7 @@ class DataManager: NSObject {
         let container = NSPersistentContainer(name: "Everpobre")
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             
-            if let err = error as? NSError {
+            if let err = error as NSError? {
                 //error handle.
                 print(err)
             }

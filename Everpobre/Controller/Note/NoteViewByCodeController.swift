@@ -23,6 +23,7 @@ enum showRotaterVariations : CGFloat {
 }
 
 let IMAGE_ENTITY_NAME = "Image"
+let TAG_ENTITY_NAME = "Tag"
 typealias ImageContraintsPairs = [UIImageView: [NSLayoutConstraint]]
 class NoteViewByCodeController: UIViewController , UINavigationControllerDelegate, UITextFieldDelegate, NotesViewControllerDelegate {
     
@@ -444,7 +445,30 @@ extension NoteViewByCodeController {
         }
     }
     
+    func validateExist(tagName:String) -> Bool {
+        var exist = false
+        note?.tags?.forEach { tagg in
+            let tag = tagg as! Tag
+            if tag.name == tagName {
+                exist = true
+            }
+        }
+        return exist
+    }
     
+    func addTag(with name:String) {
+        let exist = validateExist(tagName: name)
+        if exist {
+            let privateMOC = DataManager.sharedManager.persistentContainer.newBackgroundContext()
+            privateMOC.perform {
+                let newTag = NSEntityDescription.insertNewObject(forEntityName: TAG_ENTITY_NAME, into: privateMOC) as! Tag
+                newTag.name = name
+                let noteCopy = privateMOC.object(with: (self.note?.objectID)!)
+                newTag.note = noteCopy as! Note
+                try! privateMOC.save()
+            }
+        }
+    }
 }
 
 // MARK: - Actions
