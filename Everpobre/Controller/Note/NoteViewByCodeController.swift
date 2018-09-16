@@ -32,6 +32,7 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
     let expirationDate = UITextField() //textField .
     let titleTextField = UITextField()
     let noteTextView = UITextView()
+    let notebookLabel = UITextField()
     let notebookPickerView = UIPickerView()
     var imageView = UIImageView()
     var imageViewTransform : CGAffineTransform?
@@ -95,14 +96,43 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
         // Configuro textField
         backView.addSubview(titleTextField)
         
+        // Configuracion del expirationDate
+        expirationDate.textColor = UIColor.init(red: 0.196, green: 0.3098, blue: 0.52, alpha: 1.0)
+        expirationDate.inputView = datePicker
+        
+        let toolBar = UIToolbar()
+        toolBar.tintColor = UIColor.blue
+        toolBar.barTintColor = UIColor.lightGray
+        
+        let barButton1 = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(hideDateKeyBoard))
+        toolBar.items = [barButton1]
+        toolBar.sizeToFit()
+        
+        expirationDate.inputAccessoryView = toolBar
+        
+        backView.addSubview(expirationDate)
+        
         // Configuro noteTextView
         noteTextView.text = "Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda."
         backView.addSubview(noteTextView)
         
+        //configuro notebook label
+        notebookLabel.text = self.note?.notebook?.name
+        notebookLabel.inputView = notebookPickerView
+        backView.addSubview(notebookLabel)
+        let toolbar2 = UIToolbar()
+        toolbar2.tintColor = UIColor.blue
+        toolbar2.barTintColor = UIColor.lightGray
+        let barButton2 = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(hideNotebookKeyBoard(_:)))
+        toolbar2.items = [barButton2]
+        toolbar2.sizeToFit()
+        
+        notebookLabel.inputAccessoryView = toolbar2
+        
         //configuro notebook picker
         notebookPickerView.delegate =  self
         notebookPickerView.dataSource = self
-        backView.addSubview(notebookPickerView)
+        //backView.addSubview(notebookPickerView)
     
         mapView.delegate = self
         backView.addSubview(mapView)
@@ -112,22 +142,6 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
         datePicker.minuteInterval = 5
         datePicker.addTarget(self, action: #selector(dateChanged(_:)), for: .valueChanged)
     
-        // Configuracion del expirationDate
-        expirationDate.textColor = UIColor.init(red: 0.196, green: 0.3098, blue: 0.52, alpha: 1.0)
-        expirationDate.inputView = datePicker
-        
-        let toolBar = UIToolbar()
-        toolBar.tintColor = UIColor.blue
-        toolBar.barTintColor = UIColor.lightGray
-        
-        let barButton1 = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(hideKeyBoard))
-        toolBar.items = [barButton1]
-        toolBar.sizeToFit()
-        
-        expirationDate.inputAccessoryView = toolBar
-        
-        // Configuro label
-        backView.addSubview(expirationDate)
         
         // Configuracion del imageRotater
         imageRotater.isHidden = true
@@ -145,8 +159,9 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
         datePicker.translatesAutoresizingMaskIntoConstraints =  false
         mapView.translatesAutoresizingMaskIntoConstraints = false
         imageRotater.translatesAutoresizingMaskIntoConstraints = false
+        notebookLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        let viewDict = ["dateLabel":dateLabel, "noteTextView":noteTextView,"titleTextField":titleTextField, "expirationDate":expirationDate, "notebookPickerView":notebookPickerView, "testButton":testButton, "datePicker":datePicker, "mapView":mapView, "imageRotater":imageRotater]
+        let viewDict = ["dateLabel":dateLabel, "noteTextView":noteTextView,"titleTextField":titleTextField, "expirationDate":expirationDate, "notebookPickerView":notebookPickerView, "notebookLabel":notebookLabel, "testButton":testButton, "datePicker":datePicker, "mapView":mapView, "imageRotater":imageRotater]
 
         // Horizontals
         var constrains = NSLayoutConstraint.constraints(withVisualFormat: "|-10-[titleTextField]-10-[expirationDate]-10-[dateLabel]-10-|", options: [], metrics: nil, views: viewDict)
@@ -154,7 +169,9 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
         
         constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-10-[mapView]-10-|", options: [], metrics: nil, views: viewDict))
         
-        constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-10-[notebookPickerView]-10-|", options: [], metrics: nil, views: viewDict))
+        //constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-10-[notebookPickerView]-10-|", options: [], metrics: nil, views: viewDict))
+        
+        constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-10-[notebookLabel]-10-|", options: [], metrics: nil, views: viewDict))
         
         constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "|-10-[imageRotater]-10-|", options: [], metrics: nil, views: viewDict))
         
@@ -162,7 +179,7 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
         
         // Verticals
         
-        constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "V:[dateLabel]-10-[mapView]-10-[notebookPickerView]-0-[imageRotater]-10-[noteTextView]-10-|", options: [], metrics: nil, views: viewDict))
+        constrains.append(contentsOf: NSLayoutConstraint.constraints(withVisualFormat: "V:[dateLabel]-10-[mapView]-10-[notebookLabel]-0-[imageRotater]-10-[noteTextView]-10-|", options: [], metrics: nil, views: viewDict))
         
         constrains.append(NSLayoutConstraint(item: dateLabel,
                                              attribute: .top,
@@ -203,7 +220,7 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
         
         heightRotaterConstraint = NSLayoutConstraint(item: imageRotater, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 0)
 
-        marginTopRotaterConstraint = NSLayoutConstraint(item: imageRotater, attribute: .topMargin, relatedBy: .equal, toItem: notebookPickerView, attribute: .bottomMargin, multiplier: 1, constant: 10)
+        marginTopRotaterConstraint = NSLayoutConstraint(item: imageRotater, attribute: .topMargin, relatedBy: .equal, toItem: notebookLabel, attribute: .bottomMargin, multiplier: 1, constant: 10)
         marginTopRotaterConstraint.priority = .defaultHigh
         
         backView.addConstraints(constrains)
@@ -270,7 +287,6 @@ class NoteViewByCodeController: UIViewController , UINavigationControllerDelegat
         let paths = self.createExlusionPaths()
         noteTextView.textContainer.exclusionPaths = paths
     }
-
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -355,6 +371,7 @@ extension NoteViewByCodeController : UIPickerViewDelegate, UIPickerViewDataSourc
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         if row > 0 {
             setNotebook(row - 1);
+            notebookLabel.text = self.notebooks?[row - 1].name
         }
     }
     
@@ -464,7 +481,7 @@ extension NoteViewByCodeController {
                 let newTag = NSEntityDescription.insertNewObject(forEntityName: TAG_ENTITY_NAME, into: privateMOC) as! Tag
                 newTag.name = name
                 let noteCopy = privateMOC.object(with: (self.note?.objectID)!)
-                newTag.note = noteCopy as! Note
+                newTag.note = noteCopy as? Note
                 try! privateMOC.save()
             }
         }
@@ -627,9 +644,14 @@ extension NoteViewByCodeController {
         present(actionSheetAlert, animated: true, completion: nil)
     }
     
-    @objc func hideKeyBoard(_ sender : UIView) {
+    @objc func hideDateKeyBoard(_ sender : UIView) {
         print("hidekey")
         expirationDate.resignFirstResponder()
+    }
+    
+    @objc func hideNotebookKeyBoard(_ sender : UIView) {
+        print("hideNotebookKeyBoard")
+        notebookLabel.resignFirstResponder()
     }
 }
 
@@ -713,8 +735,12 @@ extension NoteViewByCodeController : UIImagePickerControllerDelegate {
         if let top = topConstant {
             topC = top
         }
+        
+        backView.addSubview(newImageView)
+        
         // constraints de ubicacion
         let leftConstraint = NSLayoutConstraint(item: newImageView, attribute: .left, relatedBy: .equal, toItem: noteTextView, attribute: .left, multiplier: 1, constant: CGFloat(leftC))
+        leftConstraint.identifier = "Geo"
         leftConstraint.priority = .defaultHigh
         
         let topConstraint = NSLayoutConstraint(item: newImageView, attribute: .top, relatedBy: .equal, toItem: noteTextView, attribute: .top, multiplier: 1, constant: CGFloat(topC))
@@ -742,9 +768,9 @@ extension NoteViewByCodeController : UIImagePickerControllerDelegate {
         
         //rotar la imagen
         rotateZoomImage(image: newImageView, angle: angle, scale: scale)
-
-        backView.addSubview(newImageView)
+        
         backView.addConstraints(constraints)
+        
         return [Int16(leftC),Int16(topC)]
     }
     

@@ -87,7 +87,17 @@ class NoteTableViewController: UITableViewController, NSFetchedResultsController
         return cell!
         */
         let note = fetchedResultController2.fetchedObjects![indexPath.section].notes?.allObjects[indexPath.row] as! Note
-        cell?.textLabel?.text = "\(note.title) \(note.notebook?.name)"
+        var text = ""
+        if let title = note.title {
+            text.append("\(title) ")
+        }
+        
+        if let name = note.notebook?.name {
+            text.append(name)
+        }
+        
+        cell?.textLabel?.text = text
+        
         return cell!
     }
     
